@@ -1,7 +1,7 @@
 ---
 highlighter: shiki
 css: unocss
-colorSchema: dark
+colorSchema: light
 transition: fade-out
 mdc: true
 layout: center
@@ -26,70 +26,109 @@ fonts:
 # slidev style reference: https://github.com/antfu/talks/tree/main/2024-06-13
 ---
 
-# Welcome to Slidev
+# 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 Javascript 為例》 Ch10~11
 
-Presentation slides for developers
+## 頭等函式 (1)、(2)
 
-<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10">
-  Press Space for next page <carbon:arrow-right />
+<div class='mt-10 opacity-60'>
+<p>speaker：Monica</p>
+<p>2025.5.29 @Tech-Book-Community</p>
 </div>
-
-<div class="abs-br m-6 text-xl">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" class="slidev-icon-btn">
-    <carbon:logo-github />
-  </a>
-</div>
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
----
-
-# What is Slidev?
-
-Slidev is a slides maker and presenter designed for developers, consist of the following features
-
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-  <br>
-  <br>
-
-Read more about [Why Slidev?](https://sli.dev/guide/why)
-
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/features/slide-scope-style
--->
 
 <style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
+  h1{
+    @apply font-bold
+  }
+  h2{
+    @apply text-dark-700;
+  }
+  .slidev-layout p{
+    margin-top: 0px;
+    margin-bottom: 0.5rem;
+  }
 </style>
-
-<!--
-Here is another comment.
--->
 
 ---
 
-transition: slide-up
-level: 2
+```yaml
+layout: intro
+glowSeed: 15
+glowOpacity: 0.3
+```
+
+# Hi, I'm Monica
+
+<div class="opacity-80">
+
+- 一年多經驗的前端工程師 <br>
+- 常用技術：React、Next.js <br>
+- 興趣：聽音樂、看漫畫、看小說、偶爾看劇 <br>
+- 想學的很多，但學得很慢...
+
+</div>
+
+<div my-10 w-min flex="~ gap-1" items-center justify-center>
+  <mdi:medium op50 ma text-xl/>
+  <div><a href="https://medium.com/@linyawun031" target="_blank" class="border-none! font-300">Monica</a></div>
+</div>
+
+---
+
+```yaml
+layout: center
+glow: bottom
+```
+
+# 前次回顧
+
+---
+
+```yaml
+layout: center
+```
+
+# 本次導讀 Ch10-11
+
+## 頭等函式 (1)、(2)
+
+<p class="opacity-80">筆記工：Mi</p>
+
+---
+
+# 頭等抽象化
+
+### 頭等(first-class)物件、頭等函式、頭等抽象化
+
+- first-class：譯為「頭等」、「一級」
+  <p class='my-0! opacity-80 text-sm'>本書使用「頭等」</p>
+
+<br/>
+
+- 不同類型的頭等元素稱呼
+  - first-class values (頭等值)
+  - first-class entities (頭等實體)
+  - first-class objects (頭等物件)
+  <p class='my-0! opacity-80 text-sm'>本書使用「頭等物件」</p>
+
+---
+
+# 頭等抽象化
+
+### 頭等(first-class)物件、頭等函式、頭等抽象化
+
+- 可做到以下操作的程式語言元素稱為「頭等物件」
+  - 可賦值給變數
+  - 可作為參數傳入函式
+  - 可作為函式的傳回值
+  - 可存入資料結構中
+- JavaScript 基本資料型別：符合以上 4 種操作 -> 是頭等物件 ✅
+  - 基本資料型別：數字、字串、物件、布林值、陣列
+- JavaScript 函式：**抽象化**後符合以上 4 種操作 -> 是頭等物件 ✅
+  - 又稱**頭等函式(first-class functions)**
+
+---
+
+# 頭等抽象化
 
 ---
 
