@@ -130,6 +130,10 @@ layout: center
 
 # 頭等抽象化
 
+### 頭等抽象化(first-class abstraction)
+
+- 程式語言中，函式本身作為頭等物件，可像資料一樣被傳遞、賦值、作為參數傳入其他函式
+
 ---
 
 # Navigation
