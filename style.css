@@ -1,7 +1,7 @@
 :root {
   --slidev-code-padding: 8px 10px;
-  --slidev-code-background: #16161680 !important;
-  --slidev-theme-primary: #276c9a;
+  --slidev-theme-primary: #8080f2;
+  --prism-selection-background: #73bccc;
 }
 
 .slidev-page h1 {
@@ -17,7 +17,7 @@
 
 .slidev-page h3 {
   font-weight: 600;
-  color: #575cb3;
+  color: #4b32c3;
 }
 .slidev-page h4 {
   font-weight: 600;
@@ -47,11 +47,11 @@ ul li {
 }
 
 ::selection {
-  background: #4b32c3;
+  background: #73bccc;
   color: #fff;
 }
 ::-moz-selection {
-  background: #4b32c3;
+  background: #73bccc;
   color: #fff;
 }
 img::selection {
@@ -62,8 +62,7 @@ img::-moz-selection {
 }
 
 .note-block {
-  --uno: mt-4 pa3.75 bg-#2f96ad text-#5b6b6e dark: bg-#322c4f dark: text-#eae8f0
-    border-rounded-2 font-size-3.65 opacity-80;
+  --uno: 'mt-4 pa3.75 bg-#a3cfd9 bg-opacity-40 text-#495557 border-rounded-2 font-size-3.65';
 }
 
 div[class*='language-'],
@@ -197,9 +196,4 @@ h6 {
 
 .rough-annotation > path[stroke-width='2'] {
   stroke-width: calc(2px * var(--slidev-slide-scale));
-}
-
-.slidev-layout :not(pre) > code {
-  color: rgb(201, 158, 251);
-  background: #161616ee;
 }

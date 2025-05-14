@@ -128,11 +128,136 @@ layout: center
 
 ---
 
+```yaml
+glow: right
+glowOpacity: 0.1
+```
+
 # 頭等抽象化
 
 ### 頭等抽象化(first-class abstraction)
 
 - 程式語言中，函式本身作為頭等物件，可像資料一樣被傳遞、賦值、作為參數傳入其他函式
+  <img src='/images/first-class-abstraction.png' width='350px' />
+- 優點
+  - 函式行為可被抽象化，可動態決定程式執行邏輯
+  - 靈活性、可重複使用性高
+
+---
+
+# 頭等抽象化
+
+### 頭等抽象化(first-class abstraction)
+
+- 舉例：JavaScript 函式可作為參數傳給其他函式
+
+```js {*}{maxHeight:'260px'}
+const applyOperation = (a, b, operation) => operation(a, b);
+
+const addition = (x, y) => x + y;
+const multiply = (x, y) => {
+  if (typeof x === 'number' && typeof y === 'number') {
+    return x * y;
+  } else if (typeof x === 'string' && typeof y === 'number') {
+    return x.repeat(y);
+  } else {
+    throw new Error('Invalid types for multiplication');
+  }
+};
+
+console.log(applyOperation(5, 3, addition)); // 8
+console.log(applyOperation(5, 3, multiply)); //15
+console.log(applyOperation('Good', 'day', addition)); //"Goodday"
+console.log(applyOperation('Hi', 3, multiply)); //"HiHiHi"
+```
+
+- `addition` 和 `multiply`：具體實作邏輯的函式
+- `applyOperation`：抽象化的高階函式
+
+---
+
+```yaml
+layout: center
+glowOpacity: 0.8
+glowSeed: 12
+```
+
+# Ch10 頭等函式（1）
+
+---
+
+# 程式碼異味：函式名稱中的隱性引數<span class='text-lg'> (implicit argument)</span>
+
+- 此程式碼異味代表：程式中可用頭等物件改進的部分
+- 程式碼異味特徵
+<ol class='ml-6'> 
+  <li>程式中有許多相似的實作</li>
+  <li>上述實作差異出現在函式名稱上</li>
+</ol>
+
+<div class='note-block mt-6'>
+💡 程式碼異味(code smell)：暗示程式碼可能有潛在問題的程式碼特徵
+</div>
+
+---
+
+# 程式碼異味：函式名稱中的隱性引數<span class='text-lg'> (implicit argument)</span>
+
+### 重構 1：將隱性引數轉為顯性
+
+- 情境：函式名稱中有隱性引數
+- 重構方向：加入新參數，將可能的隱性引數轉為頭等物件，再以顯性方式傳入
+- 重構步驟
+
+<ol class='ml-6'> 
+  <li>辨識出函式名稱裡的隱性引數</li>
+  <li>加入新參數以接收顯性輸入</li>
+  <li>利用新參數取代函式實作中的固定值</li>
+  <li>更改呼叫程式碼</li>
+</ol>
+
+- 優點
+  - 有效表達程式碼意圖
+  - 有機會消除重複元素
+
+---
+
+# 程式碼異味：函式名稱中的隱性引數<span class='text-lg'> (implicit argument)</span>
+
+### 重構 2：以回呼取代主體實作
+
+- 重構方向：將一段程式的主體區塊(有變化處)轉換為回呼，可將該區塊行為傳入頭等函式內
+- 重構步驟
+
+<ol class='ml-6'> 
+  <li>辨識一段程式的前段、主體、後段區塊</li>
+  <li>將所有區塊包裝成函式 a</li>
+  <li>將主體區塊擷取成函式 b，將其當成引數傳入函式 a</li>
+</ol>
+
+- 優點
+  - 輕鬆用既有程式建立更高階函式
+
+---
+
+# 行銷部門仍須與開發小組協調
+
+- 若 MegaMart 行銷部門有新需求，仍須要求開發小組在 API 加入新函式
+- 開發小組現有 API 函式無法滿足的新需求如
+  - 設定購物車內商品的價格
+  - 設定購物車內商品的數量
+  - 設定購物車內商品的運費
+    <p class='mt-6'/>
+- 抽象屏障為何無法滿足上述需求?
+  - 以上功能類似，對應程式碼相似，抽象屏障卻無法提供幫助
+
+<div v-click='1' class='ml-6'>
+
+🧐 原本行銷人員可直接存取「購物車」資料結構並設設定資料，但抽象屏障隱藏細節後，就無法直接存取
+<br/>
+-> 須等開發人員開發才能繼續工作
+
+</div>
 
 ---
 
