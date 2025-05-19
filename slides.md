@@ -6,11 +6,11 @@ transition: fade-out
 mdc: true
 layout: center
 glowSeed: 4
-title: 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 Javascript 為例》 Ch10-11
+title: 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 JavaScript 為例》 Ch10-11
 info: |
-  ## 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 Javascript 為例》 讀書會導讀：Ch10-11
+  ## 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 JavaScript 為例》 讀書會導讀：Ch10-11
   - speaker：Monica
-  - 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 Javascript 為例》 讀書會：[Functional-Programming-Book-Club](https://github.com/Tech-Book-Community/Functional-Programming)
+  - 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 JavaScript 為例》 讀書會：[Functional-Programming-Book-Club](https://github.com/Tech-Book-Community/Functional-Programming)
 author: Monica
 class: text-center
 # https://sli.dev/features/drawing
@@ -188,16 +188,14 @@ glowSeed: 12
 
 # 程式碼異味：函式名稱中的隱性引數<span class='text-lg'> (implicit argument)</span>
 
-- 此程式碼異味代表：程式中可用頭等物件改進的部分
+此程式碼異味代表：程式中可用頭等物件改進的部分
 - 程式碼異味特徵
 <ol class='ml-6'> 
   <li>程式中有許多相似的實作</li>
   <li>上述實作差異出現在函式名稱上</li>
 </ol>
 
-<div class='note-block mt-6'>
-💡 程式碼異味(code smell)：暗示程式碼可能有潛在問題的程式碼特徵
-</div>
+
 
 ---
 
@@ -247,17 +245,96 @@ glowSeed: 12
   - 設定購物車內商品的價格
   - 設定購物車內商品的數量
   - 設定購物車內商品的運費
-    <p class='mt-6'/>
-- 抽象屏障為何無法滿足上述需求?
-  - 以上功能類似，對應程式碼相似，抽象屏障卻無法提供幫助
 
-<div v-click='1' class='ml-6'>
-
-🧐 原本行銷人員可直接存取「購物車」資料結構並設設定資料，但抽象屏障隱藏細節後，就無法直接存取
-<br/>
--> 須等開發人員開發才能繼續工作
-
+<div class='mt-12' v-click='1'>
+  <p class='my-0!'>
+    🤯 抽象屏障為何無法滿足上述需求?
+  </p>
+  <p class='my-0! opacity-75 text-sm'>
+    功能和程式碼都很類似，抽象屏障卻無法提供幫助
+  </p>
 </div>
+
+<div class='mt-6' v-click='2'>
+  <p class='my-0!'>
+    🧐 行銷人員原本能直接操作購物車資料，現在因為抽象屏障隱藏了細節，無法直接修改
+  </p>
+  <p class='my-0! opacity-75 text-sm'>
+    須等開發人員開發才能繼續工作
+  </p>
+</div>
+
+---
+
+# 程式碼異味：函式名稱中的隱性引數
+開發人員按新需求寫函式
+```js {*}{maxHeight:'220px'}
+function setPriceByName(cart, name, price){
+    var item = cart[name];
+    var newItem = objectSet(item, 'price', price);
+    var newCart = objectSet(cart, name, newItem);
+    return newCart;
+}
+
+function setQuantityByName(cart, name, quant){
+    var item = cart[name];
+    var newItem = objectSet(item, 'quantity', quant);
+    var newCart = objectSet(cart, name, newItem);
+    return newCart;
+}
+
+function setShippingByName(cart, name, ship){
+    var item = cart[name];
+    var newItem = objectSet(item, 'shipping', ship);
+    var newCart = objectSet(cart, name, newItem);
+    return newCart;
+}
+
+function setTaxByName(cart, name, tax){
+    var item = cart[name];
+    var newItem = objectSet(item, 'tax', tax);
+    var newCart = objectSet(cart, name, newItem);
+    return newCart;
+}
+
+function objectSet(object, key, value){
+    var copy = Object.assign({}, object);
+    copy[key] = value;
+    return copy;
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
