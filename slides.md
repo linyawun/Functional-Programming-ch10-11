@@ -468,6 +468,60 @@ glow: right
 
 ---
 
+# 用字串當屬性名稱會不會增加錯誤發生率？
+
+如果行銷人員打錯字（打錯屬性名稱）怎麼辦？
+
+### 編譯期檢查（compile-time checks）
+
+- 需要靜態型別系統（static types system）
+- JavaScript：沒有內建靜態型別系統，但可用 TypeScript 彌補
+  - TypeScript：可檢測給定字串是否和既有屬性名稱吻合，若字串有誤，型別檢測器在程式碼執行前就指出錯誤
+- Java：可用 enum 型別確保屬性名稱正確性
+- Haskell：可用「可辨識聯合（discriminated union）」達成類似目的
+  - 可辨識聯合：「代數資料型別（algebraic data type）」中的「和型別（sum type）」，可用代數資料型別概括
+- 靜態型別系統會隨語言不同而有變化，應視具體情況而定
+
+---
+
+# 用字串當屬性名稱會不會增加錯誤發生率？
+
+如果行銷人員打錯字（打錯屬性名稱）怎麼辦？
+
+### 執行期檢查（run-time checks）
+
+- 與編譯過程無關，發生在函式實際執行時
+- 一樣可告知傳入字串是否正確
+- JavaScript 沒靜態型別系統，此方式可能更合適
+
+```js
+var validItemFields = ['price', 'quantity', 'shipping', 'tax']; // 列出正確屬性名稱
+
+function setFieldByName(cart, name, field, value) {
+  if (!validItemFields.includes(field)) {
+    // 當 field 引數值為頭等物件時，執行期檢測就很容易
+    throw 'Not a valid item field: ' + "'" + field + "'.";
+  }
+  var item = cart[name];
+  var newItem = objectSet(item, field, value);
+  var newCart = objectSet(cart, name, newItem);
+  return newCart;
+}
+
+function objectSet(object, key, value) {
+  // objectSet 是在第 6 章定義的
+  var copy = Object.assign({}, object);
+  copy[key] = value;
+  return copy;
+}
+```
+
+---
+
+# 將屬性名稱頭等化，會不會造成 API 難以修改？
+
+---
+
 # Navigation
 
 Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
