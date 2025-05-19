@@ -26,7 +26,7 @@ fonts:
 # slidev style reference: https://github.com/antfu/talks/tree/main/2024-06-13
 ---
 
-# 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 Javascript 為例》 Ch10~11
+# 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 JavaScript 為例》 Ch10~11
 
 ## 頭等函式 (1)、(2)
 
@@ -314,12 +314,84 @@ function objectSet(object, key, value){
 
 ---
 
-# 程式碼異味：函式名稱中的隱性引數
+# 辨識程式碼異味：函式名稱中的隱性引數
 - 程式碼異味特徵
   - 函式實作非常相似
-  - 上述實作的不同處顯示函式名稱上
+  - 上述實作的不同處顯示在函式名稱上
   <br/>
-  函式名稱中有差異的部分，視為隱性引數
+  函式名稱中有差異處，視為隱性引數
+
+---
+
+# 重構 1：將隱性引數轉換為顯性參數
+
+- 將隱性引數轉為顯性參數的步驟
+<ol class='ml-6'> 
+  <li>辨識出函式名稱裡的隱性引數</li>
+  <li>加入新參數以接收顯性輸入</li>
+  <li>利用新參數取代函式實作中的固定值</li>
+  <li>更改呼叫程式碼</li>
+</ol>
+
+---
+
+# 重構 1：將隱性引數轉換為顯性參數
+重構前後的 `setPriceByName`
+
+- 重構前
+
+<div class='ml-6'>
+
+```js {*|1}
+function setPriceByName(cart, name, price) { // 1. 辨識函式名稱的隱性引數：Price 是函式名稱中的隱性引數
+  var item = cart[name];
+  var newItem = objectSetItem(item, 'price', price);
+  var newCart = objectSet(cart, name, newItem);
+  return newCart;
+}
+
+cart = setPriceByName(cart, "shoe", 13);
+cart = setQuantityByName(cart, "shoe", 3);
+cart = setShippingByName(cart, "shoe", 0);
+cart = setTaxByName(cart, "shoe", 2.34);
+```
+</div>
+
+---
+
+# 重構 1：將隱性引數轉換為顯性參數
+重構前後的 `setPriceByName`
+- 重構後
+  - 四個既有函式變成一個單一函式
+  - 將屬性名稱（`'price'`、`'quantity'`、`'shipping'`、`'tax'`）當成頭等物件（first-class values）
+    - 頭等：可將屬性值作為引數傳入函式、可儲存在變數或陣列 
+
+<div class='ml-6'>
+
+```js {*|1|3|8-12|all}{maxHeight:'200px'}
+function setFieldByName(cart, name, field, value) { // 2. 加入新參數以接收顯性輸入：加入代表屬性的顯性參數 field，將代表屬性值的參數名稱普適化為 value
+  var item = cart[name];
+  var newItem = objectSetItem(item, field, value); // 3. 利用新參數取代函式實作中的固定值：實作中使用新參數 field
+  var newCart = objectSet(cart, name, newItem);
+  return newCart;
+}
+
+// 4. 更改呼叫程式碼
+cart = setFieldByName(cart, "shoe", "price", 13);
+cart = setFieldByName(cart, "shoe", "quantity", 3);
+cart = setFieldByName(cart, "shoe", "shipping", 0);
+cart = setFieldByName(cart, "shoe", "tax", 2.34);
+```
+<p class='text-sm'>
+🧐 讓 API 使用者自己打字串好像不怎麼安全？
+</p>
+</div>
+
+
+
+---
+
+# Q & A
 
 
 
