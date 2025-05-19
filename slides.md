@@ -268,7 +268,7 @@ glowSeed: 12
 
 # 程式碼異味：函式名稱中的隱性引數
 開發人員按新需求寫函式
-```js {*}{maxHeight:'220px'}
+```js {*|1,8,15,22}{maxHeight:'160px'}
 function setPriceByName(cart, name, price){
     var item = cart[name];
     var newItem = objectSet(item, 'price', price);
@@ -305,34 +305,21 @@ function objectSet(object, key, value){
 
 ```
 
+- 程式碼異味：重複
+  - 唯一差異：指定屬性名的字串(`'price'`、`'quantity'`、`'shipping'`、`'tax'`)
+    - 字串出現在函式名稱中 -> 函式名稱的某部分是該函式的引數
+- 「函式名稱中的隱性引數」：未實際傳入任何引數，而用函式名稱指出提供給函式的值
+- 如何解決此程式碼異味?
+  - 將屬性名稱頭等化(first-class)，將屬性作為引數傳入
 
+---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 程式碼異味：函式名稱中的隱性引數
+- 程式碼異味特徵
+  - 函式實作非常相似
+  - 上述實作的不同處顯示函式名稱上
+  <br/>
+  函式名稱中有差異的部分，視為隱性引數
 
 
 
