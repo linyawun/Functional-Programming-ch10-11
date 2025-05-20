@@ -1034,6 +1034,38 @@ forEach(dishes, clean);
 
 ### 前後改寫比較
 
+- 原始程式
+
+```js
+for (var i = 0; i < foods.length; i++) {
+  var food = foods[i];
+  cook(food);
+  eat(food);
+}
+
+for (var i = 0; i < dishes.length; i++) {
+  var dish = dishes[i];
+  wash(dish);
+  dry(dish);
+  putAway(dish);
+}
+```
+
+- 使用 `forEach()`
+
+```js
+forEach(foods, function (food) {
+  cook(food);
+  eat(food);
+});
+
+forEach(dishes, function (dish) {
+  wash(dish);
+  dry(dish);
+  putAway(dish);
+});
+```
+
 ---
 
 # Navigation
