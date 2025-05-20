@@ -486,8 +486,6 @@ glow: right
   - 可辨識聯合：「代數資料型別（algebraic data type）」中的「和型別（sum type）」，可用代數資料型別概括
 - 靜態型別系統會隨語言不同而有變化，需看情況決定
 
-
-
 ---
 
 # 用字串當屬性名稱會不會增加錯誤發生率？
@@ -525,7 +523,9 @@ function objectSet(object, key, value) {
 ---
 
 # 將屬性名稱頭等化，會不會造成 API 難以修改？
+
 - 將屬性名稱頭等化，等於暴露抽象屏障下的實作細節
+
   - 「購物車」與「商品」是 JavaScript 物件，屬性定義於抽象屏障以下
 
 - 允許屏障之上的使用者傳入屬性名稱，不就破壞抽象屏障意義了？將屬性加到 API 規格，就扼殺變更這些屬性的可能？
@@ -540,27 +540,28 @@ function objectSet(object, key, value) {
 ---
 
 # 將屬性名稱頭等化，會不會造成 API 難以修改？
+
 - 舉例：若開發小組想將 `'quantity'` 改為 `'number'`，但不想影響屏障以上程式碼
   - 行銷人員可繼續用 `'quantity'` ，開發人員自行將字串轉為 `'number'`
   - 為何可進行轉換？
     - 已將屬性名稱頭等化
-    - 能將屬性名稱存在陣列、物件中，對其做邏輯判斷
+    - 能將屬性名稱存在陣列、物件，對其做邏輯判斷
 
 <div class='ml-6'>
 
 ```js {*}{maxHeight:'200px'}
 var validItemFields = ['price', 'quantity', 'shipping', 'tax', 'number'];
-var translations = { 'quantity': 'number' };
+var translations = { quantity: 'number' };
 
 function setFieldByName(cart, name, field, value) {
   if (!validItemFields.includes(field)) {
-    throw "Not a valid item field: " + field + ".";
+    throw 'Not a valid item field: ' + field + '.';
   }
-  if (translations.hasOwnProperty(field)) { 
-    field = translations[field];           // 將舊屬性名稱轉換成新名稱
+  if (translations.hasOwnProperty(field)) {
+    field = translations[field]; // 將舊屬性名稱轉換成新名稱
   }
   var item = cart[name];
-  var newItem = objectSet(item, field, value); 
+  var newItem = objectSet(item, field, value);
   var newCart = objectSet(cart, name, newItem);
   return newCart;
 }
@@ -571,16 +572,20 @@ function setFieldByName(cart, name, field, value) {
 ---
 
 # 為什麼要用物件實作資料？
+
 為何以物件實作「購物車」與「商品」？
+
 - hash map 可用不同型別的鍵存取屬性值，適合表示鍵值對資料
 - 「購物車」和「商品」屬於呼叫圖低層級，需被各函式存取
   - 以物件或陣列通用資料結構實作，可讓資料不受限於單一用途
-  <img src='/images/low-level-data-type.png' width='700px' />
+    <img src='/images/low-level-data-type.png' width='700px' />
 
 ---
 
 # 為什麼要用物件實作資料？
+
 ### 資料（Data）要能到處通用，而非侷限於少數介面
+
 - Data 和 Action、Calculations 相比的關鍵優勢：詮釋方式多元
   - 可根據不同目的，以多種方法使用或解釋 Data
   - 讓 Data 保持靈活，以便在程式各處重複使用的原則稱為 **「資料導向」（data orientation）**
@@ -596,14 +601,15 @@ function setFieldByName(cart, name, field, value) {
 ---
 
 # 頭等函式可取代任何語法
+
 - 無法將 `+` 這類非頭等算符指定給變數，但可定義一個功能等同 `+` 的函式
   ```js
-  function plus(a, b){
-      return a + b;
+  function plus(a, b) {
+    return a + b;
   }
   ```
   - 可將 `plus()` 視為頭等化的 `+` 算符
-  
+
 <div v-click='1' class='mt-6'>
 
 - 為何不直接用 `+`？`plus()` 不是多此一舉嗎？
@@ -615,22 +621,25 @@ function setFieldByName(cart, name, field, value) {
 ---
 
 # 頭等函式可取代任何語法
+
 將其他算數算符頭等化
+
 ```js
-function times(a, b){
-    return a * b;
+function times(a, b) {
+  return a * b;
 }
-function minus(a, b){
-    return a - b;
+function minus(a, b) {
+  return a - b;
 }
-function dividedBy(a, b){
-    return a / b;
+function dividedBy(a, b) {
+  return a / b;
 }
 ```
 
 ---
 
 # 討論
+
 - 可以讓行銷團隊不必自行寫 `for` 迴圈嗎？
   - 需將 `for` 迴圈頭等化
   - 寫一個「以頭等函式為引數的新函式」，稱為**高階函式**
@@ -644,6 +653,7 @@ glow: right
 # 討論
 
 ### 頭等函式與高階函式
+
 - 頭等函式：可將該函式當成另一個函式的引數
 - 高階函式：此函式能接收其他函式作為引數
 <img src='/images/first-class-and-high-order-function.png' width='450px' />
@@ -653,11 +663,12 @@ glow: right
 高階函式（high-order function）：以其他函式做為傳入引數或傳回值
 </div>
 
-
 ---
 
 # `for` 迴圈重構範例
+
 走訪陣列的兩個 for 迴圈範例
+
 - 料理與吃飯
   ```js
   for (var i = 0; i < foods.length; i++) {
@@ -678,10 +689,10 @@ glow: right
 - 兩迴圈目的不同，程式碼相似
   - 將兩者改寫得完全一致，就可刪除其中一個
 
-
 ---
 
 # 將兩個迴圈改寫成一致
+
 <div class='note-block'>
 <b>辨識函式名稱中的隱性引數</b>
 
@@ -697,67 +708,42 @@ glow: right
 3. 利用新參數取代函式實作中的固定值
 4. 更改呼叫程式碼
 </div>
+
 ---
 
 # 將兩個迴圈改寫成一致
+
 1. 標注相同處
    - 目標：讓沒底線的也變相同
-   <img src='/images/refactor1-forloop-step1.png' width='100%' />
+     <img src='/images/refactor1-forloop-step1.png' width='100%' />
 
 ---
 
 # 將兩個迴圈改寫成一致
+
 2. 將迴圈包在函式中
+
+<div class="grid grid-cols-2 gap-x-4">
+
 ```js {*|1,7-8}
-function cookAndEatFoods(){
-    for (var i = 0; i < foods.length; i++) {
-      var food = foods[i];
-      cook(food);
-      eat(food);
-    }
+function cookAndEatFoods() {
+  for (var i = 0; i < foods.length; i++) {
+    var food = foods[i];
+    cook(food);
+    eat(food);
+  }
 }
 cookAndEatFoods();
 ```
 
 ```js {*|1,8-9}
-function cleanDishes(){
-    for (var i = 0; i < dishes.length; i++) {
-      var dish = dishes[i];
-      wash(dish);
-      dry(dish);
-      putAway(dish);
-    }     
-}
-cleanDishes();
-```
-
-
----
-
-# 將兩個迴圈改寫成一致
-3. 將功能相同、名稱不同的變數改為更普適化的名稱
-
-<div class="grid grid-cols-2 gap-x-4">
-
-```js {*|3}
-function cookAndEatFoods(){
-    for (var i = 0; i < foods.length; i++) {
-      var item = foods[i]; // 將 food 統一命名為 item
-      cook(item);
-      eat(item);
-    }
-}
-cookAndEatFoods();
-```
-
-```js {*|3}
-function cleanDishes(){
-    for (var i = 0; i < dishes.length; i++) {
-      var item = dishes[i]; // 將 dish 統一命名為 item
-      wash(item);
-      dry(item);
-      putAway(item);
-    }     
+function cleanDishes() {
+  for (var i = 0; i < dishes.length; i++) {
+    var dish = dishes[i];
+    wash(dish);
+    dry(dish);
+    putAway(dish);
+  }
 }
 cleanDishes();
 ```
@@ -767,7 +753,42 @@ cleanDishes();
 ---
 
 # 將兩個迴圈改寫成一致
+
+3. 將功能相同、名稱不同的變數改為更普適化的名稱
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js {*|3}
+function cookAndEatFoods() {
+  for (var i = 0; i < foods.length; i++) {
+    var item = foods[i]; // 將 food 統一命名為 item
+    cook(item);
+    eat(item);
+  }
+}
+cookAndEatFoods();
+```
+
+```js {*|3}
+function cleanDishes() {
+  for (var i = 0; i < dishes.length; i++) {
+    var item = dishes[i]; // 將 dish 統一命名為 item
+    wash(item);
+    dry(item);
+    putAway(item);
+  }
+}
+cleanDishes();
+```
+
+</div>
+
+---
+
+# 將兩個迴圈改寫成一致
+
 4. 針對「函式名稱中有隱性引數」重構
+
 - 🔺 程式碼異味
   - `cookAndEatFoods` 對應 `foods` 陣列
   - `cleanDishes` 對應 `dishes` 陣列
@@ -775,128 +796,138 @@ cleanDishes();
 
 <div class="grid grid-cols-2 gap-x-4">
 
-```js {*|1,8}
-function cookAndEatArray(array){ // 改用更普適化名稱、接收顯性陣列參數
-    for (var i = 0; i < array.length; i++) {
-      var item = array[i]; 
-      cook(item);
-      eat(item);
-    }
+```js {*|1-2,9}
+function cookAndEatArray(array) {
+  // 改用更普適化名稱、接收顯性陣列參數
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    cook(item);
+    eat(item);
+  }
 }
 cookAndEatArray(foods); // 將陣列傳入
 ```
 
-```js {*|1,9}
-function cleanArray(array){ // 改用更普適化名稱、接收顯性陣列參數
-    for (var i = 0; i < array.length; i++) { 
-      var item = array[i]; 
-      wash(item);
-      dry(item);
-      putAway(item);
-    }     
+```js {*|1-2,10}
+function cleanArray(array) {
+  // 改用更普適化名稱、接收顯性陣列參數
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    wash(item);
+    dry(item);
+    putAway(item);
+  }
 }
 cleanArray(dishes); // 將陣列傳入
 ```
 
 </div>
 
-
 ---
 
 # 將兩個迴圈改寫成一致
+
 5. 將 for 迴圈主體擷取成新函式
+
 - 兩函式唯一不同處：`for` 迴圈主體區塊
   -> 可將其擷取為新函式
 
 <div class="grid grid-cols-2 gap-x-4">
 
-```js {*|1,4,8-11}
-function cookAndEatArray(array){  // 1. 兩者不同處反映在函式名稱內的隱性引數：cookAndEat
-    for (var i = 0; i < array.length; i++) {
-      var item = array[i]; 
-      cookAndEat(item); // 3. 呼叫擷取函式
-    }
+```js {*|1-2,5,8-13}
+function cookAndEatArray(array) {
+  // 1. 兩者不同處反映在函式名稱內的隱性引數：cookAndEat
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    cookAndEat(item); // 3. 呼叫擷取函式
+  }
 }
 
-function cookAndEat(food){ // 2. 定義擷取函式
-    cook(food);
-    eat(food);
+function cookAndEat(food) {
+  // 2. 定義擷取函式
+  cook(food);
+  eat(food);
 }
 
-cookAndEatArray(foods); 
+cookAndEatArray(foods);
 ```
 
-```js {*|1,4,8-12}
-function cleanArray(array){ // 1. 兩者不同處反映在函式名稱內的隱性引數：clean
-    for (var i = 0; i < array.length; i++) { 
-      var item = array[i]; 
-      clean(item); // 3. 呼叫擷取函式
-    }     
+```js {*|1-2,5,8-14}
+function cleanArray(array) {
+  // 1. 兩者不同處反映在函式名稱內的隱性引數：clean
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    clean(item); // 3. 呼叫擷取函式
+  }
 }
 
-function clean(dish){ // 2. 定義擷取函式
-    wash(dish);
-    dry(dish);
-    putAway(dish);
+function clean(dish) {
+  // 2. 定義擷取函式
+  wash(dish);
+  dry(dish);
+  putAway(dish);
 }
 
-cleanArray(dishes); 
+cleanArray(dishes);
 ```
-
 
 </div>
 
-
 ---
-
 
 ```yaml
 glow: top
 ```
 
 # 將兩個迴圈改寫成一致
+
 6. 針對「函式名稱中有隱性引數」重構
+
 - 🔺 程式碼異味
   - `cookAndEatArray` 呼叫 `cookAndEat()`
   - `cleanArray` 呼叫 `clean()`
-  <img src='/images/refactor1-forloop-step6.png' width='60%' />
+    <img src='/images/refactor1-forloop-step6.png' width='60%' />
 
 ---
 
 # 將兩個迴圈改寫成一致
+
 6. 針對「函式名稱中有隱性引數」重構
+
 - 以重構 1 「將隱性引數轉為顯性」改寫
 
 <div class="grid grid-cols-2 gap-x-4">
 
-```js {*|1,4,13}
-function operateOnArray(array, f){ // 1. 改成普適化的名字，加入新參數接受顯性引數
-    for (var i = 0; i < array.length; i++) { 
-      var item = array[i]; 
-      f(item); // 2. 在函式實作中使用新參數
-    } 
+```js {*|1-2,5,14}
+function operateOnArray(array, f) {
+  // 1. 改成普適化的名字，加入新參數接受顯性引數
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    f(item); // 2. 在函式實作中使用新參數
+  }
 }
 
-function cookAndEat(food){ 
-    cook(food);
-    eat(food);
+function cookAndEat(food) {
+  cook(food);
+  eat(food);
 }
 
 operateOnArray(foods, cookAndEat); // 3. 在呼叫程式碼中傳入引數
 ```
 
-```js {*|1,4,14}
-function operateOnArray(array, f){ // 1. 改成普適化的名字，加入新參數接受顯性引數
-    for (var i = 0; i < array.length; i++) { 
-      var item = array[i]; 
-      f(item); // 2. 在函式實作中使用新參數
-    } 
+```js {*|1-2,5,15}
+function operateOnArray(array, f) {
+  // 1. 改成普適化的名字，加入新參數接受顯性引數
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    f(item); // 2. 在函式實作中使用新參數
+  }
 }
 
-function clean(dish){ 
-    wash(dish);
-    dry(dish);
-    putAway(dish);
+function clean(dish) {
+  wash(dish);
+  dry(dish);
+  putAway(dish);
 }
 
 operateOnArray(dishes, clean); // 3. 在呼叫程式碼中傳入引數
@@ -907,33 +938,101 @@ operateOnArray(dishes, clean); // 3. 在呼叫程式碼中傳入引數
 ---
 
 # 將兩個迴圈改寫成一致
-7. ✅ 兩個函式看起來一致，所有實作差異都能以引數彌補
-- 差異：迴圈中的操作、被操作的陣列
 
+7. ✅ 兩個函式看起來一致，所有實作差異都能以引數彌補
+
+- 差異：迴圈中的操作、被操作的陣列
 
 ---
 
 # 將兩個迴圈改寫成一致
+
 8. 目前程式碼中，兩個 `operateOnArray` 函式完全相同，可刪除其中一個
 
+<div class="grid grid-cols-2 gap-x-4">
 
+```js {*|1-7}
+function operateOnArray(array, f) {
+  // operateOnArray 和右方的完全相同
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    f(item);
+  }
+}
 
+function cookAndEat(food) {
+  cook(food);
+  eat(food);
+}
 
+operateOnArray(foods, cookAndEat);
+```
 
+```js {*|1-6}
+function operateOnArray(array, f) {
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    f(item);
+  }
+}
 
+function clean(dish) {
+  wash(dish);
+  dry(dish);
+  putAway(dish);
+}
 
+operateOnArray(dishes, clean);
+```
 
+</div>
 
+---
 
+# 將兩個迴圈改寫成一致
 
+8. 目前程式碼中，兩個 `operateOnArray` 函式完全相同，可刪除其中一個
 
+- `operateOnArray` 這類函式在 JavaScript 通常稱作 `forEach()`
+  - 將 `operateOnArray` 改名為 `forEach()`
+- `forEach()` 可接受一個函式引數，屬於高階函式
 
+<div class="grid grid-cols-2 gap-x-4">
 
+```js
+function forEach(array, f) {
+  // forEach 有一個引數為函式
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    f(item);
+  }
+}
 
+function cookAndEat(food) {
+  cook(food);
+  eat(food);
+}
 
+forEach(foods, cookAndEat);
+```
 
+```js
+function clean(dish) {
+  wash(dish);
+  dry(dish);
+  putAway(dish);
+}
 
+forEach(dishes, clean);
+```
 
+</div>
+
+---
+
+# 將兩個迴圈改寫成一致
+
+### 前後改寫比較
 
 ---
 
@@ -962,7 +1061,6 @@ Hover on the bottom-left corner to see the navigation's controls panel, [learn m
 <p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
 #
 
-
 ---
 
 ```yaml
@@ -970,13 +1068,14 @@ layout: center
 ```
 
 # 下回預告：Ch12-13
+
 ### Ch12 利用函式走訪
+
 ### Ch13 串連函數式工具
 
 - 日期：6/12
 - 導讀人：Mi
 - 筆記工：Sam
-
 
 ---
 
