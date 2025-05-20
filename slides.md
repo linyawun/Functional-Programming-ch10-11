@@ -859,7 +859,81 @@ glow: top
 - 🔺 程式碼異味
   - `cookAndEatArray` 呼叫 `cookAndEat()`
   - `cleanArray` 呼叫 `clean()`
-  <img src='/images/refactor1-forloop-step6.png' width='70%' />
+  <img src='/images/refactor1-forloop-step6.png' width='60%' />
+
+---
+
+# 將兩個迴圈改寫成一致
+6. 針對「函式名稱中有隱性引數」重構
+- 以重構 1 「將隱性引數轉為顯性」改寫
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js {*|1,4,13}
+function operateOnArray(array, f){ // 1. 改成普適化的名字，加入新參數接受顯性引數
+    for (var i = 0; i < array.length; i++) { 
+      var item = array[i]; 
+      f(item); // 2. 在函式實作中使用新參數
+    } 
+}
+
+function cookAndEat(food){ 
+    cook(food);
+    eat(food);
+}
+
+operateOnArray(foods, cookAndEat); // 3. 在呼叫程式碼中傳入引數
+```
+
+```js {*|1,4,14}
+function operateOnArray(array, f){ // 1. 改成普適化的名字，加入新參數接受顯性引數
+    for (var i = 0; i < array.length; i++) { 
+      var item = array[i]; 
+      f(item); // 2. 在函式實作中使用新參數
+    } 
+}
+
+function clean(dish){ 
+    wash(dish);
+    dry(dish);
+    putAway(dish);
+}
+
+operateOnArray(dishes, clean); // 3. 在呼叫程式碼中傳入引數
+```
+
+</div>
+
+---
+
+# 將兩個迴圈改寫成一致
+7. ✅ 兩個函式看起來一致，所有實作差異都能以引數彌補
+- 差異：迴圈中的操作、被操作的陣列
+
+
+---
+
+# 將兩個迴圈改寫成一致
+8. 目前程式碼中，兩個 `operateOnArray` 函式完全相同，可刪除其中一個
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
