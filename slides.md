@@ -89,7 +89,7 @@ layout: center
 
 # 本次導讀 Ch10-11
 
-## 頭等函式 (1)、(2)
+### 頭等函式 (1)、(2)
 
 <p class="opacity-80">筆記工：Mi</p>
 
@@ -635,8 +635,231 @@ function dividedBy(a, b){
   - 需將 `for` 迴圈頭等化
   - 寫一個「以頭等函式為引數的新函式」，稱為**高階函式**
 
+---
+
+```yaml
+glow: right
+```
+
+# 討論
+
+### 頭等函式與高階函式
+- 頭等函式：可將該函式當成另一個函式的引數
+- 高階函式：此函式能接收其他函式作為引數
+<img src='/images/first-class-and-high-order-function.png' width='450px' />
+<p class='my-0! opacity-75 text-sm'>沒有頭等函式，就不可能寫出高階函式</p>
+
+<div class='note-block mt-6'>
+高階函式（high-order function）：以其他函式做為傳入引數或傳回值
+</div>
 
 
+---
+
+# `for` 迴圈重構範例
+走訪陣列的兩個 for 迴圈範例
+- 料理與吃飯
+  ```js
+  for (var i = 0; i < foods.length; i++) {
+    var food = foods[i];
+    cook(food);
+    eat(food);
+  }
+  ```
+- 洗碗
+  ```js
+  for (var i = 0; i < dishes.length; i++) {
+    var dish = dishes[i];
+    wash(dish);
+    dry(dish);
+    putAway(dish);
+  }
+  ```
+- 兩迴圈目的不同，程式碼相似
+  - 將兩者改寫得完全一致，就可刪除其中一個
+
+
+---
+
+# 將兩個迴圈改寫成一致
+<div class='note-block'>
+<b>辨識函式名稱中的隱性引數</b>
+
+1. 函式實作相似
+2. 實作中的不同處反映在函式名稱上
+</div>
+
+<div class='note-block'>
+<b>重構 1 的步驟</b>
+
+1. 辨識出函式名稱裡的隱性引數
+2. 加入新參數以接收顯性輸入
+3. 利用新參數取代函式實作中的固定值
+4. 更改呼叫程式碼
+</div>
+---
+
+# 將兩個迴圈改寫成一致
+1. 標注相同處
+   - 目標：讓沒底線的也變相同
+   <img src='/images/refactor1-forloop-step1.png' width='100%' />
+
+---
+
+# 將兩個迴圈改寫成一致
+2. 將迴圈包在函式中
+```js {*|1,7-8}
+function cookAndEatFoods(){
+    for (var i = 0; i < foods.length; i++) {
+      var food = foods[i];
+      cook(food);
+      eat(food);
+    }
+}
+cookAndEatFoods();
+```
+
+```js {*|1,8-9}
+function cleanDishes(){
+    for (var i = 0; i < dishes.length; i++) {
+      var dish = dishes[i];
+      wash(dish);
+      dry(dish);
+      putAway(dish);
+    }     
+}
+cleanDishes();
+```
+
+
+---
+
+# 將兩個迴圈改寫成一致
+3. 將功能相同、名稱不同的變數改為更普適化的名稱
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js {*|3}
+function cookAndEatFoods(){
+    for (var i = 0; i < foods.length; i++) {
+      var item = foods[i]; // 將 food 統一命名為 item
+      cook(item);
+      eat(item);
+    }
+}
+cookAndEatFoods();
+```
+
+```js {*|3}
+function cleanDishes(){
+    for (var i = 0; i < dishes.length; i++) {
+      var item = dishes[i]; // 將 dish 統一命名為 item
+      wash(item);
+      dry(item);
+      putAway(item);
+    }     
+}
+cleanDishes();
+```
+
+</div>
+
+---
+
+# 將兩個迴圈改寫成一致
+4. 針對「函式名稱中有隱性引數」重構
+- 🔺 程式碼異味
+  - `cookAndEatFoods` 對應 `foods` 陣列
+  - `cleanDishes` 對應 `dishes` 陣列
+- 以重構 1 「將隱性引數轉為顯性」改寫
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js {*|1,8}
+function cookAndEatArray(array){ // 改用更普適化名稱、接收顯性陣列參數
+    for (var i = 0; i < array.length; i++) {
+      var item = array[i]; 
+      cook(item);
+      eat(item);
+    }
+}
+cookAndEatArray(foods); // 將陣列傳入
+```
+
+```js {*|1,9}
+function cleanArray(array){ // 改用更普適化名稱、接收顯性陣列參數
+    for (var i = 0; i < array.length; i++) { 
+      var item = array[i]; 
+      wash(item);
+      dry(item);
+      putAway(item);
+    }     
+}
+cleanArray(dishes); // 將陣列傳入
+```
+
+</div>
+
+
+---
+
+# 將兩個迴圈改寫成一致
+5. 將 for 迴圈主體擷取成新函式
+- 兩函式唯一不同處：`for` 迴圈主體區塊
+  -> 可將其擷取為新函式
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js {*|1,4,8-11}
+function cookAndEatArray(array){  // 1. 兩者不同處反映在函式名稱內的隱性引數：cookAndEat
+    for (var i = 0; i < array.length; i++) {
+      var item = array[i]; 
+      cookAndEat(item); // 3. 呼叫擷取函式
+    }
+}
+
+function cookAndEat(food){ // 2. 定義擷取函式
+    cook(food);
+    eat(food);
+}
+
+cookAndEatArray(foods); 
+```
+
+```js {*|1,4,8-12}
+function cleanArray(array){ // 1. 兩者不同處反映在函式名稱內的隱性引數：clean
+    for (var i = 0; i < array.length; i++) { 
+      var item = array[i]; 
+      clean(item); // 3. 呼叫擷取函式
+    }     
+}
+
+function clean(dish){ // 2. 定義擷取函式
+    wash(dish);
+    dry(dish);
+    putAway(dish);
+}
+
+cleanArray(dishes); 
+```
+
+
+</div>
+
+
+---
+
+
+```yaml
+glow: top
+```
+
+# 將兩個迴圈改寫成一致
+6. 針對「函式名稱中有隱性引數」重構
+- 🔺 程式碼異味
+  - `cookAndEatArray` 呼叫 `cookAndEat()`
+  - `cleanArray` 呼叫 `clean()`
+  <img src='/images/refactor1-forloop-step6.png' width='70%' />
 
 ---
 
@@ -664,3 +887,28 @@ Hover on the bottom-left corner to see the navigation's controls panel, [learn m
 
 <p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
 #
+
+
+---
+
+```yaml
+layout: center
+```
+
+# 下回預告：Ch12-13
+### Ch12 利用函式走訪
+### Ch13 串連函數式工具
+
+- 日期：6/12
+- 導讀人：Mi
+- 筆記工：Sam
+
+
+---
+
+```yaml
+layout: center
+glowSeed: 10
+```
+
+# Thanks for Listening!
