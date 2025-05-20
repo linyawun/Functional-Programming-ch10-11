@@ -397,6 +397,10 @@ cart = setFieldByName(cart, 'shoe', 'tax', 2.34);
 
 ---
 
+```yaml
+glow: top
+```
+
 # 討論
 
 - Q：不必再請開發小組專門撰寫設定某屬性的函式？
@@ -406,7 +410,7 @@ cart = setFieldByName(cart, 'shoe', 'tax', 2.34);
 - Q：如果之後加入新購物車或商品屬性怎麼辦？
   - A：不論既有或新加的，`setFieldByName` 都可處理，只要提供新屬性名稱即可
 - 👍 本來行銷部門要記多個函式，還要發出新增函式請求 -> 現在只需知道一個函式和幾個屬性名稱字串
-  - 待補圖
+  <img src='/images/refactor1-after-refactor.png' width='100%' />
 
 ---
 
@@ -475,12 +479,14 @@ glow: right
 ### 編譯期檢查（compile-time checks）
 
 - 需要靜態型別系統（static types system）
-- JavaScript：沒有內建靜態型別系統，但可用 TypeScript 彌補
-  - TypeScript：可檢測給定字串是否和既有屬性名稱吻合，若字串有誤，型別檢測器在程式碼執行前就指出錯誤
+- JavaScript：沒有內建靜態型別系統，可用 TypeScript 彌補
+  - TypeScript：可檢測字串是否符合既有屬性名稱，若字串有誤，型別檢測器在程式碼執行前就指出錯誤
 - Java：可用 enum 型別確保屬性名稱正確性
 - Haskell：可用「可辨識聯合（discriminated union）」達成類似目的
   - 可辨識聯合：「代數資料型別（algebraic data type）」中的「和型別（sum type）」，可用代數資料型別概括
-- 靜態型別系統會隨語言不同而有變化，應視具體情況而定
+- 靜態型別系統會隨語言不同而有變化，需看情況決定
+
+
 
 ---
 
@@ -490,11 +496,11 @@ glow: right
 
 ### 執行期檢查（run-time checks）
 
-- 與編譯過程無關，發生在函式實際執行時
+- 在程式執行時進行，與編譯無關
 - 一樣可告知傳入字串是否正確
 - JavaScript 沒靜態型別系統，此方式可能更合適
 
-```js
+```js {*}{maxHeight:'220px'}
 var validItemFields = ['price', 'quantity', 'shipping', 'tax']; // 列出正確屬性名稱
 
 function setFieldByName(cart, name, field, value) {
@@ -519,6 +525,118 @@ function objectSet(object, key, value) {
 ---
 
 # 將屬性名稱頭等化，會不會造成 API 難以修改？
+- 將屬性名稱頭等化，等於暴露抽象屏障下的實作細節
+  - 「購物車」與「商品」是 JavaScript 物件，屬性定義於抽象屏障以下
+
+- 允許屏障之上的使用者傳入屬性名稱，不就破壞抽象屏障意義了？將屬性加到 API 規格，就扼殺變更這些屬性的可能？
+  <div v-click='1'>
+
+  - 不完全正確，內部實作細節沒有暴露
+  - 🧊 API 的屬性「字串」不應更動
+  - ✅ 屏障底層的屬性名稱仍可自由修改
+  - 即使下層屬性真的更改，使用者仍可用相同「字串」，只要將該字串轉為正確屬性名稱即可
+  </div>
+
+---
+
+# 將屬性名稱頭等化，會不會造成 API 難以修改？
+- 舉例：若開發小組想將 `'quantity'` 改為 `'number'`，但不想影響屏障以上程式碼
+  - 行銷人員可繼續用 `'quantity'` ，開發人員自行將字串轉為 `'number'`
+  - 為何可進行轉換？
+    - 已將屬性名稱頭等化
+    - 能將屬性名稱存在陣列、物件中，對其做邏輯判斷
+
+<div class='ml-6'>
+
+```js {*}{maxHeight:'200px'}
+var validItemFields = ['price', 'quantity', 'shipping', 'tax', 'number'];
+var translations = { 'quantity': 'number' };
+
+function setFieldByName(cart, name, field, value) {
+  if (!validItemFields.includes(field)) {
+    throw "Not a valid item field: " + field + ".";
+  }
+  if (translations.hasOwnProperty(field)) { 
+    field = translations[field];           // 將舊屬性名稱轉換成新名稱
+  }
+  var item = cart[name];
+  var newItem = objectSet(item, field, value); 
+  var newCart = objectSet(cart, name, newItem);
+  return newCart;
+}
+```
+
+</div>
+
+---
+
+# 為什麼要用物件實作資料？
+為何以物件實作「購物車」與「商品」？
+- hash map 可用不同型別的鍵存取屬性值，適合表示鍵值對資料
+- 「購物車」和「商品」屬於呼叫圖低層級，需被各函式存取
+  - 以物件或陣列通用資料結構實作，可讓資料不受限於單一用途
+  <img src='/images/low-level-data-type.png' width='700px' />
+
+---
+
+# 為什麼要用物件實作資料？
+### 資料（Data）要能到處通用，而非侷限於少數介面
+- Data 和 Action、Calculations 相比的關鍵優勢：詮釋方式多元
+  - 可根據不同目的，以多種方法使用或解釋 Data
+  - 讓 Data 保持靈活，以便在程式各處重複使用的原則稱為 **「資料導向」（data orientation）**
+- 以特定 API 定義 Data 會怎樣?
+  - 降低上述優勢，未來需要用新角度詮釋 Data 時就會遇到困難
+
+👍 商品、購物車等通用實體應以通用資料結構(如：物件、陣列)來實作
+
+<div class='note-block mt-12'>
+資料導向（data orientation）：以通用資料結構表示「與事件和實體有關之事實」的設計原則
+</div>
+
+---
+
+# 頭等函式可取代任何語法
+- 無法將 `+` 這類非頭等算符指定給變數，但可定義一個功能等同 `+` 的函式
+  ```js
+  function plus(a, b){
+      return a + b;
+  }
+  ```
+  - 可將 `plus()` 視為頭等化的 `+` 算符
+  
+<div v-click='1' class='mt-6'>
+
+- 為何不直接用 `+`？`plus()` 不是多此一舉嗎？
+</div>
+<div v-click='2' class='ml-6'>
+<b>頭等化就是力量！💪</b>
+</div>
+
+---
+
+# 頭等函式可取代任何語法
+將其他算數算符頭等化
+```js
+function times(a, b){
+    return a * b;
+}
+function minus(a, b){
+    return a - b;
+}
+function dividedBy(a, b){
+    return a / b;
+}
+```
+
+---
+
+# 討論
+- 可以讓行銷團隊不必自行寫 `for` 迴圈嗎？
+  - 需將 `for` 迴圈頭等化
+  - 寫一個「以頭等函式為引數的新函式」，稱為**高階函式**
+
+
+
 
 ---
 
