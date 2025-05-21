@@ -79,7 +79,73 @@ layout: center
 glow: bottom
 ```
 
-# 前次回顧
+# 前次回顧：分層設計(1)、分層設計(2)
+
+## 原則 1：讓實作更直觀
+
+- 同層函式細節程度一致
+- 只關注當前層級
+- 通用函式在低層，變動小
+- 上層函式變動大
+
+---
+
+```yaml
+layout: center
+glow: bottom
+```
+
+# 前次回顧：分層設計(1)、分層設計(2)
+
+## 原則 2：以抽象屏障輔助實作
+
+- 上方：忽略實作細節
+- 下方：忽略上層用途
+- 目的：降低溝通成本、提升可讀性
+
+---
+
+```yaml
+layout: center
+glow: bottom
+```
+
+# 前次回顧：分層設計(1)、分層設計(2)
+
+## 原則 3：讓下層函式保持簡約不變
+
+- 屏障內函式越少越好
+- 新功能在高層實現
+- 底層函式應保持簡潔易記
+
+---
+
+```yaml
+layout: center
+glow: bottom
+```
+
+# 前次回顧：分層設計(1)、分層設計(2)
+
+## 原則 4：分層只要舒適即可
+
+- 層數適中即可
+- 評估標準：是否舒適、是否滿足需求
+
+---
+
+```yaml
+layout: center
+glow: bottom
+```
+
+# 前次回顧：分層設計(1)、分層設計(2)
+
+## 呼叫圖告訴我們的訊息
+
+- 可維護性：上層箭頭少，修改時較安全
+- 可測試性：上層箭頭多，測試價值較高
+- 可重用性：下方函式少，重用性較高
 
 ---
 
@@ -156,19 +222,19 @@ const applyOperation = (a, b, operation) => operation(a, b);
 
 const addition = (x, y) => x + y;
 const multiply = (x, y) => {
-  if (typeof x === 'number' && typeof y === 'number') {
+  if (typeof x === "number" && typeof y === "number") {
     return x * y;
-  } else if (typeof x === 'string' && typeof y === 'number') {
+  } else if (typeof x === "string" && typeof y === "number") {
     return x.repeat(y);
   } else {
-    throw new Error('Invalid types for multiplication');
+    throw new Error("Invalid types for multiplication");
   }
 };
 
 console.log(applyOperation(5, 3, addition)); // 8
 console.log(applyOperation(5, 3, multiply)); //15
-console.log(applyOperation('Good', 'day', addition)); //"Goodday"
-console.log(applyOperation('Hi', 3, multiply)); //"HiHiHi"
+console.log(applyOperation("Good", "day", addition)); //"Goodday"
+console.log(applyOperation("Hi", 3, multiply)); //"HiHiHi"
 ```
 
 - `addition` 和 `multiply`：具體實作邏輯的函式
@@ -272,28 +338,28 @@ glowSeed: 12
 ```js {*|1,8,15,22}{maxHeight:'160px'}
 function setPriceByName(cart, name, price) {
   var item = cart[name];
-  var newItem = objectSet(item, 'price', price);
+  var newItem = objectSet(item, "price", price);
   var newCart = objectSet(cart, name, newItem);
   return newCart;
 }
 
 function setQuantityByName(cart, name, quant) {
   var item = cart[name];
-  var newItem = objectSet(item, 'quantity', quant);
+  var newItem = objectSet(item, "quantity", quant);
   var newCart = objectSet(cart, name, newItem);
   return newCart;
 }
 
 function setShippingByName(cart, name, ship) {
   var item = cart[name];
-  var newItem = objectSet(item, 'shipping', ship);
+  var newItem = objectSet(item, "shipping", ship);
   var newCart = objectSet(cart, name, newItem);
   return newCart;
 }
 
 function setTaxByName(cart, name, tax) {
   var item = cart[name];
-  var newItem = objectSet(item, 'tax', tax);
+  var newItem = objectSet(item, "tax", tax);
   var newCart = objectSet(cart, name, newItem);
   return newCart;
 }
@@ -348,15 +414,15 @@ function objectSet(object, key, value) {
 function setPriceByName(cart, name, price) {
   // 1. 辨識函式名稱的隱性引數：Price 是函式名稱中的隱性引數
   var item = cart[name];
-  var newItem = objectSetItem(item, 'price', price);
+  var newItem = objectSetItem(item, "price", price);
   var newCart = objectSet(cart, name, newItem);
   return newCart;
 }
 
-cart = setPriceByName(cart, 'shoe', 13);
-cart = setQuantityByName(cart, 'shoe', 3);
-cart = setShippingByName(cart, 'shoe', 0);
-cart = setTaxByName(cart, 'shoe', 2.34);
+cart = setPriceByName(cart, "shoe", 13);
+cart = setQuantityByName(cart, "shoe", 3);
+cart = setShippingByName(cart, "shoe", 0);
+cart = setTaxByName(cart, "shoe", 2.34);
 ```
 
 </div>
@@ -384,10 +450,10 @@ function setFieldByName(cart, name, field, value) {
 }
 
 // 4. 更改呼叫程式碼
-cart = setFieldByName(cart, 'shoe', 'price', 13);
-cart = setFieldByName(cart, 'shoe', 'quantity', 3);
-cart = setFieldByName(cart, 'shoe', 'shipping', 0);
-cart = setFieldByName(cart, 'shoe', 'tax', 2.34);
+cart = setFieldByName(cart, "shoe", "price", 13);
+cart = setFieldByName(cart, "shoe", "quantity", 3);
+cart = setFieldByName(cart, "shoe", "shipping", 0);
+cart = setFieldByName(cart, "shoe", "tax", 2.34);
 ```
 
 <p class='text-sm'>
@@ -499,12 +565,12 @@ glow: right
 - JavaScript 沒靜態型別系統，此方式可能更合適
 
 ```js {*}{maxHeight:'220px'}
-var validItemFields = ['price', 'quantity', 'shipping', 'tax']; // 列出正確屬性名稱
+var validItemFields = ["price", "quantity", "shipping", "tax"]; // 列出正確屬性名稱
 
 function setFieldByName(cart, name, field, value) {
   if (!validItemFields.includes(field)) {
     // 當 field 引數值為頭等物件時，執行期檢測就很容易
-    throw 'Not a valid item field: ' + "'" + field + "'.";
+    throw "Not a valid item field: " + "'" + field + "'.";
   }
   var item = cart[name];
   var newItem = objectSet(item, field, value);
@@ -550,12 +616,12 @@ function objectSet(object, key, value) {
 <div class='ml-6'>
 
 ```js {*}{maxHeight:'200px'}
-var validItemFields = ['price', 'quantity', 'shipping', 'tax', 'number'];
-var translations = { quantity: 'number' };
+var validItemFields = ["price", "quantity", "shipping", "tax", "number"];
+var translations = { quantity: "number" };
 
 function setFieldByName(cart, name, field, value) {
   if (!validItemFields.includes(field)) {
-    throw 'Not a valid item field: ' + field + '.';
+    throw "Not a valid item field: " + field + ".";
   }
   if (translations.hasOwnProperty(field)) {
     field = translations[field]; // 將舊屬性名稱轉換成新名稱
@@ -1031,8 +1097,8 @@ forEach(dishes, clean);
 ---
 
 # 將兩個迴圈改寫成一致
-前後改寫比較
 
+前後改寫比較
 
 <div class="grid grid-cols-2 gap-x-4">
 
@@ -1060,6 +1126,7 @@ for (var i = 0; i < dishes.length; i++) {
 <div>
 
 #### 使用 `forEach()`
+
 ```js
 // 這裡以匿名函式呈現
 forEach(foods, function (food) {
@@ -1074,13 +1141,11 @@ forEach(dishes, function (dish) {
 });
 ```
 
-  - `forEach()` 以其他函式為引數，屬於**高階函式**
-  - 需實作 `for` 迴圈不同功能時，只要呼叫 `forEach()` 即可
+- `forEach()` 以其他函式為引數，屬於**高階函式**
+- 需實作 `for` 迴圈不同功能時，只要呼叫 `forEach()` 即可
 
 </div>
 </div>
-
-
 
 ---
 
@@ -1101,21 +1166,22 @@ forEach(dishes, function (dish) {
 # 重構 2：以回呼取代主體實作
 
 - 問題：為了送出錯誤訊息，需將上千行程式碼包在 `try/catch` 內，`try/catch` 內都是重複的程式碼
+
   - `try` 和 `catch` 區塊無法分開，不能包成獨立函式重複使用
+
   ```js
   // 類似程式碼不斷重複
   try {
-      saveUserData(user);
+    saveUserData(user);
   } catch {
-      logToSnapErrors(error); // 將錯誤送往 Snap Errors 服務
+    logToSnapErrors(error); // 將錯誤送往 Snap Errors 服務
   }
   ```
+
 <div v-click='1' class='mt-6'>
 
 - 解法：以回呼取代主體實作
 </div>
-
-
 
 ---
 
@@ -1125,20 +1191,19 @@ forEach(dishes, function (dish) {
 
 <div class="grid grid-cols-2 gap-x-4">
 
-
 ```js
 try {
-    saveUserData(user);
+  saveUserData(user);
 } catch {
-    logToSnapErrors(error); // catch 區塊都相同
+  logToSnapErrors(error); // catch 區塊都相同
 }
 ```
 
 ```js
 try {
-    fetchProduct(productId);
+  fetchProduct(productId);
 } catch {
-    logToSnapErrors(error); // catch 區塊都相同
+  logToSnapErrors(error); // catch 區塊都相同
 }
 ```
 
@@ -1148,24 +1213,27 @@ try {
 
 # 以回呼取代主體實作
 
-2. 辨識出「前段-主體-後段」結構
-
+2. 辨識「前段-主體-後段」結構
 
 <div class="grid grid-cols-2 gap-x-4">
 
 ```js
-try { // 前段
-    saveUserData(user); // 主體
-} catch { // 後段
-    logToSnapErrors(error); // 後段
+try {
+  // 前段
+  saveUserData(user); // 主體
+} catch {
+  // 後段
+  logToSnapErrors(error); // 後段
 } // 後段
 ```
 
 ```js
-try { // 前段
-    fetchProduct(productId); // 主體
-} catch { // 後段
-    logToSnapErrors(error); // 後段
+try {
+  // 前段
+  fetchProduct(productId); // 主體
+} catch {
+  // 後段
+  logToSnapErrors(error); // 後段
 } // 後段
 ```
 
@@ -1178,12 +1246,9 @@ try { // 前段
   - 可重複利用相同處（前、後段）
   - 可自由變動不同處（主體）
 
-
-
 <div class='note-block'>
 JavaScript 裡，作為引數傳入的函式通常叫「回呼（callback）」
 </div>
-
 
 ---
 
@@ -1196,29 +1261,33 @@ JavaScript 裡，作為引數傳入的函式通常叫「回呼（callback）」
 <div>
 
 原始程式
+
 ```js
-try { 
-    saveUserData(user); 
-} catch { 
-    logToSnapErrors(error); 
-} 
+try {
+  saveUserData(user);
+} catch {
+  logToSnapErrors(error);
+}
 ```
+
 </div>
 
 <div>
 
 包裝後
+
 ```js {*|1,7-9}
-function withLogging(){
-   try { 
-        saveUserData(user); 
-    } catch { 
-        logToSnapErrors(error); 
-    }  
+function withLogging() {
+  try {
+    saveUserData(user);
+  } catch {
+    logToSnapErrors(error);
+  }
 }
 
 withLogging(); // 定義完此函式後，才可呼叫
 ```
+
 </div>
 
 </div>
@@ -1234,16 +1303,17 @@ withLogging(); // 定義完此函式後，才可呼叫
 <div>
 
 目前程式
+
 ```js
-function withLogging(){
-   try { 
-        saveUserData(user); 
-    } catch { 
-        logToSnapErrors(error); 
-    }  
+function withLogging() {
+  try {
+    saveUserData(user);
+  } catch {
+    logToSnapErrors(error);
+  }
 }
 
-withLogging(); 
+withLogging();
 ```
 
 </div>
@@ -1251,18 +1321,21 @@ withLogging();
 <div>
 
 擷取回呼
+
 ```js {*|1,3,9}
-function withLogging(f){ // 1. f 代表要傳入的函式，成為一個參數
-   try { 
-        f(); // 2. 在原本主體位置呼叫回呼函式
-    } catch { 
-        logToSnapErrors(error); 
-    }  
+function withLogging(f) {
+  // 1. f 代表要傳入的函式，成為一個參數
+  try {
+    f(); // 2. 在原本主體位置呼叫回呼函式
+  } catch {
+    logToSnapErrors(error);
+  }
 }
 
-withLogging(function() { // 3. 傳入主體程式碼
-    saveUserData(user); // 單行的匿名函式
-})
+withLogging(function () {
+  // 3. 傳入主體程式碼
+  saveUserData(user); // 單行的匿名函式
+});
 ```
 
 </div>
@@ -1276,6 +1349,7 @@ glow: bottom
 ```
 
 # 以回呼取代主體實作
+
 <div class='note-block'>
 <b>重構 2 的步驟</b>
 
@@ -1288,7 +1362,9 @@ glow: bottom
 ---
 
 # 內嵌與匿名函式
+
 ### 定義函式的方法
+
 1. 全域定義
 <div class='ml-6'>
 
@@ -1296,8 +1372,9 @@ glow: bottom
 - 可在程式任何地方呼叫
 
 ```js
-function saveCurrentUserData(){ // 定義全域範圍的函式
-    saveUserData(user);
+function saveCurrentUserData() {
+  // 定義全域範圍的函式
+  saveUserData(user);
 }
 
 withLogging(saveCurrentUserData); // 將函式名稱當引數傳入
@@ -1308,6 +1385,7 @@ withLogging(saveCurrentUserData); // 將函式名稱當引數傳入
 ---
 
 # 內嵌與匿名函式
+
 ### 定義函式的方法
 
 2. 區域定義
@@ -1315,24 +1393,25 @@ withLogging(saveCurrentUserData); // 將函式名稱當引數傳入
 
 - 在區域範圍定義、有名稱
 - 只能在特定區域內呼叫，外部無法存取
-- 適用情境：想在特定範圍內多次呼叫，又不希望被範圍外程式呼叫時
+- 適用情境：想在特定範圍內多次呼叫，又不希望被範圍外程式呼叫
 
 ```js
-function someFunction(){
-    var saveCurrentUserData = function(){ // saveCurrentUserData 此函式只能在 someFunction() 的範圍內呼叫
-        saveUserData(user);
-    }
-    
-    withLogging(saveCurrentUserData); // 利用名稱傳入函式
+function someFunction() {
+  var saveCurrentUserData = function () {
+    // saveCurrentUserData 此函式只能在 someFunction() 的範圍內呼叫
+    saveUserData(user);
+  };
+
+  withLogging(saveCurrentUserData); // 利用名稱傳入函式
 }
 ```
 
 </div>
 
-
 ---
 
 # 內嵌與匿名函式
+
 ### 定義函式的方法
 
 3. 內嵌定義
@@ -1340,12 +1419,15 @@ function someFunction(){
 
 - 直接在需要的位置定義，沒有名稱
   - 稱為**匿名函式(anonymous function)**
-- 適用情境：實作很短、僅需呼叫一次時
+- 適用情境：實作很短、僅需呼叫一次
 
 ```js
 // function()...此函式沒有名稱，會在需要的地方直接定義，這就是內嵌匿名函式
-withLogging(function(){ saveUserData(user); }); 
+withLogging(function () {
+  saveUserData(user);
+});
 ```
+
 </div>
 
 <div class='note-block'>
@@ -1360,42 +1442,189 @@ withLogging(function(){ saveUserData(user); });
 
 # 為什麼要將 `saveUserData()` 包裹在函式中?
 
-```js
-function withLogging(f){ 
-   try { 
-        f(); 
-    } catch { 
-        logToSnapErrors(error); 
-    }  
+```js {*|8-12}{maxHeight:'150px'}
+function withLogging(f) {
+  try {
+    f();
+  } catch {
+    logToSnapErrors(error);
+  }
 }
 
-withLogging(function() { 
-    saveUserData(user); // 為何要將此函式包在另一函式?
-})
+withLogging(function () {
+  saveUserData(user); // 為何要將此函式包在另一函式?
+});
 ```
 
 - 直接寫 `withLogging(saveUserData(user));` 會怎麼樣?
   - `saveUserData(user)` 會**先**被呼叫，再進入 `withLogging()` 中
-  <p v-click='1'>⛔ <code>saveUserData(user)</code> 的呼叫處在 <code>try</code> 區塊外，不如預期</p>
+  <p v-click='2'>⛔ <code>saveUserData(user)</code> 的呼叫處在 <code>try</code> 區塊外，不如預期</p>
 
 ---
 
 # 為什麼要將 `saveUserData()` 包裹在函式中?
 
-```js
-function withLogging(f){ 
-   try { 
-        f(); 
-    } catch { 
-        logToSnapErrors(error); 
-    }  
+```js {8-12}{maxHeight:'150px'}
+function withLogging(f) {
+  try {
+    f();
+  } catch {
+    logToSnapErrors(error);
+  }
 }
 
-withLogging(function() { 
-    saveUserData(user); // 為何要將此函式包在另一函式?
-})
+withLogging(function () {
+  saveUserData(user); // 為何要將此函式包在另一函式?
+});
 ```
-- 
+
+- 如何讓 `saveUserData(user)` 在正確地方被呼叫?
+  - 將 `saveUserData(user)` 包在另一函式中，再當作引數傳入
+
+<div v-click='1' class='ml-12'>
+<p >💡 將 <code>saveUserData(user)</code> 先「存放」在包裝函式內，推遲到時機成熟時再執行</p>
+```js
+function(){
+    saveUserData(user); // 在包裹函式被呼叫前，這一行都不會執行
+}
+```
+</div>
+
+---
+
+# JavaScript 函式是頭等物件，可做很多操作
+
+#### 指定給變數(賦予該函式名稱)
+
+```js
+var f = function () {
+  saveUserData(user);
+};
+```
+
+<div class='mb-6'/>
+
+#### 存放至 collection 資料結構(如: 陣列、物件)
+
+```js
+array.push(function () {
+  saveUserData(user);
+});
+```
+
+---
+
+# JavaScript 函式是頭等物件，可做很多操作
+
+#### 當成引數傳入另一個函式
+
+```js
+withLogging(function () {
+  saveUserData(user);
+});
+```
+
+<b>作為函式引數，可自行決定函式執行時機</b>
+
+<div class="grid grid-cols-3 gap-x-4">
+
+<div>
+  <p class='my-0!'>在特定條件下呼叫</p>
+
+```js
+function callOnThursday(f) {
+  if (today === "Thursday") {
+    f();
+  }
+}
+```
+
+</div>
+<div>
+
+<p class='my-0!'>等待一段時間再呼叫</p>
+
+```js
+function callTomorrow(f) {
+  sleep(oneDay);
+  f();
+}
+```
+
+</div>
+<div>
+
+<p class='my-0!'>在指定脈絡下呼叫</p>
+
+```js
+function withLogging(f) {
+  try {
+    f();
+  } catch (error) {
+    logToSnapErrors(error);
+  }
+}
+```
+
+</div>
+</div>
+
+---
+
+```yaml
+layout: center
+```
+
+# 為什麼要將 `saveUserData()` 包裹在函式中?
+
+<br class='hidden'>
+
+為了將 `saveUserData()` 推遲到 `withLogging()` 的 `try/catch` 內執行，需將前者包裹後傳入後者
+
+---
+
+# 討論
+
+<div class="grid grid-cols-[1fr_380px]  gap-x-4">
+<div>
+
+- Q：為何要傳入程式？只傳入 Data（數值）不行嗎？
+  - 如果傳入的是 Data 而非函式...
+    - `saveUserData(user)` 呼叫處在 `try/catch` 區塊外，即使出錯 `catch` 也捕捉不到
+  - 傳入函式的目的：在特定脈絡下執行該程式
+    - 脈絡如：`try/catch`、`for` 迴圈
+  - 高階函式：可為其他函式設定執行脈絡，在程式各處重複使用
+
+</div>
+
+<div>
+
+```js {*|1-2,10}
+function withLogging(data) {
+  // 傳入的不是函式，而是函式執行結果
+  try {
+    data;
+  } catch (error) {
+    logToSnapErrors(error);
+  }
+}
+
+withLogging(saveUserData(user)); // 函式呼叫地點在 try/catch 區塊外
+```
+
+</div>
+
+</div>
+
+---
+
+```yaml
+layout: center
+glowOpacity: 0.8
+glowSeed: 12
+```
+
+# Ch11 頭等函式（2）
 
 ---
 
@@ -1432,9 +1661,9 @@ layout: center
 
 # 下回預告：Ch12-13
 
-### Ch12 利用函式走訪
+## Ch12 利用函式走訪
 
-### Ch13 串連函數式工具
+## Ch13 串連函數式工具
 
 - 日期：6/12
 - 導讀人：Mi
