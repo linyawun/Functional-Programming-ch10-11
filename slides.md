@@ -1031,10 +1031,14 @@ forEach(dishes, clean);
 ---
 
 # 將兩個迴圈改寫成一致
+前後改寫比較
 
-### 前後改寫比較
 
-- 原始程式
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+#### 原始程式
 
 ```js
 for (var i = 0; i < foods.length; i++) {
@@ -1051,9 +1055,13 @@ for (var i = 0; i < dishes.length; i++) {
 }
 ```
 
-- 使用 `forEach()`
+</div>
 
+<div>
+
+#### 使用 `forEach()`
 ```js
+// 這裡以匿名函式呈現
 forEach(foods, function (food) {
   cook(food);
   eat(food);
@@ -1065,6 +1073,290 @@ forEach(dishes, function (dish) {
   putAway(dish);
 });
 ```
+
+  - `forEach()` 以其他函式為引數，屬於**高階函式**
+  - 需實作 `for` 迴圈不同功能時，只要呼叫 `forEach()` 即可
+
+</div>
+</div>
+
+
+
+---
+
+# 建立高階函式的步驟
+
+1. 將目標程式碼包裹在新函式中
+2. 用普適化名稱替換過於專一的命名
+3. 將隱性引數改為顯性（重構 1）
+4. 擷取函式
+5. 再次將隱性引數改為顯性（重構 1）
+
+<div v-click='1' class='mt-6'>
+重構 2：「以回呼取代主體實作」可用更少步驟達到上述效果
+</div>
+
+---
+
+# 重構 2：以回呼取代主體實作
+
+- 問題：為了送出錯誤訊息，需將上千行程式碼包在 `try/catch` 內，`try/catch` 內都是重複的程式碼
+  - `try` 和 `catch` 區塊無法分開，不能包成獨立函式重複使用
+  ```js
+  // 類似程式碼不斷重複
+  try {
+      saveUserData(user);
+  } catch {
+      logToSnapErrors(error); // 將錯誤送往 Snap Errors 服務
+  }
+  ```
+<div v-click='1' class='mt-6'>
+
+- 解法：以回呼取代主體實作
+</div>
+
+
+
+---
+
+# 以回呼取代主體實作
+
+1. 觀察重複區塊
+
+<div class="grid grid-cols-2 gap-x-4">
+
+
+```js
+try {
+    saveUserData(user);
+} catch {
+    logToSnapErrors(error); // catch 區塊都相同
+}
+```
+
+```js
+try {
+    fetchProduct(productId);
+} catch {
+    logToSnapErrors(error); // catch 區塊都相同
+}
+```
+
+</div>
+
+---
+
+# 以回呼取代主體實作
+
+2. 辨識出「前段-主體-後段」結構
+
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js
+try { // 前段
+    saveUserData(user); // 主體
+} catch { // 後段
+    logToSnapErrors(error); // 後段
+} // 後段
+```
+
+```js
+try { // 前段
+    fetchProduct(productId); // 主體
+} catch { // 後段
+    logToSnapErrors(error); // 後段
+} // 後段
+```
+
+</div>
+
+- 相同處：前、後段
+- 不同處：主體
+  - 主體像一個「可填空」區域
+- 目標
+  - 可重複利用相同處（前、後段）
+  - 可自由變動不同處（主體）
+
+
+
+<div class='note-block'>
+JavaScript 裡，作為引數傳入的函式通常叫「回呼（callback）」
+</div>
+
+
+---
+
+# 以回呼取代主體實作
+
+3. 將所有區塊包裝成函式 a
+
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+原始程式
+```js
+try { 
+    saveUserData(user); 
+} catch { 
+    logToSnapErrors(error); 
+} 
+```
+</div>
+
+<div>
+
+包裝後
+```js {*|1,7-9}
+function withLogging(){
+   try { 
+        saveUserData(user); 
+    } catch { 
+        logToSnapErrors(error); 
+    }  
+}
+
+withLogging(); // 定義完此函式後，才可呼叫
+```
+</div>
+
+</div>
+
+---
+
+# 以回呼取代主體實作
+
+4. 擷取主體實作（會變化的區塊），當成引數傳入 `withLogging`
+
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+目前程式
+```js
+function withLogging(){
+   try { 
+        saveUserData(user); 
+    } catch { 
+        logToSnapErrors(error); 
+    }  
+}
+
+withLogging(); 
+```
+
+</div>
+
+<div>
+
+擷取回呼
+```js {*|1,3,9}
+function withLogging(f){ // 1. f 代表要傳入的函式，成為一個參數
+   try { 
+        f(); // 2. 在原本主體位置呼叫回呼函式
+    } catch { 
+        logToSnapErrors(error); 
+    }  
+}
+
+withLogging(function() { // 3. 傳入主體程式碼
+    saveUserData(user); // 單行的匿名函式
+})
+```
+
+</div>
+
+</div>
+
+---
+
+```yaml
+glow: bottom
+```
+
+# 以回呼取代主體實作
+<div class='note-block'>
+<b>重構 2 的步驟</b>
+
+1. 辨識前段、主體與後段區塊
+2. 將所有區塊包裝成函式
+3. 將主體區塊擷取成回呼
+
+</div>
+
+---
+
+# 內嵌與匿名函式
+### 定義函式的方法
+1. 全域定義
+<div class='ml-6'>
+
+- 在全域範圍定義、有名稱
+- 可在程式任何地方呼叫
+
+```js
+function saveCurrentUserData(){ // 定義全域範圍的函式
+    saveUserData(user);
+}
+
+withLogging(saveCurrentUserData); // 將函式名稱當引數傳入
+```
+
+</div>
+
+---
+
+# 內嵌與匿名函式
+### 定義函式的方法
+
+2. 區域定義
+<div class='ml-6'>
+
+- 在區域範圍定義、有名稱
+- 只能在特定區域內呼叫，外部無法存取
+- 適用情境：想在特定範圍內多次呼叫，又不希望被範圍外程式呼叫時
+
+```js
+function someFunction(){
+    var saveCurrentUserData = function(){ // saveCurrentUserData 此函式只能在 someFunction() 的範圍內呼叫
+        saveUserData(user);
+    }
+    
+    withLogging(saveCurrentUserData); // 利用名稱傳入函式
+}
+```
+
+</div>
+
+
+---
+
+# 內嵌與匿名函式
+### 定義函式的方法
+
+3. 內嵌定義
+<div class='ml-6'>
+
+- 直接在需要的位置定義，沒有名稱
+  - 稱為**匿名函式(anonymous function)**
+- 適用情境：實作很短、僅需呼叫一次時
+
+```js
+// function()...此函式沒有名稱，會在需要的地方直接定義，這就是內嵌匿名函式
+withLogging(function(){ saveUserData(user); }); 
+```
+</div>
+
+<div class='note-block'>
+
+- 內嵌函式(inline function)：在有需要處直接定義的函式
+  - 如: 需傳入函式時，把該函式定義在參數列中
+- 匿名函式(anonymous function)：沒有名稱的函式，通常用內嵌方式定義
+
+</div>
+
+
 
 ---
 
