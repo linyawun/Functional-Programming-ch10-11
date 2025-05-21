@@ -1356,7 +1356,46 @@ withLogging(function(){ saveUserData(user); });
 
 </div>
 
+---
 
+# 為什麼要將 `saveUserData()` 包裹在函式中?
+
+```js
+function withLogging(f){ 
+   try { 
+        f(); 
+    } catch { 
+        logToSnapErrors(error); 
+    }  
+}
+
+withLogging(function() { 
+    saveUserData(user); // 為何要將此函式包在另一函式?
+})
+```
+
+- 直接寫 `withLogging(saveUserData(user));` 會怎麼樣?
+  - `saveUserData(user)` 會**先**被呼叫，再進入 `withLogging()` 中
+  <p v-click='1'>⛔ <code>saveUserData(user)</code> 的呼叫處在 <code>try</code> 區塊外，不如預期</p>
+
+---
+
+# 為什麼要將 `saveUserData()` 包裹在函式中?
+
+```js
+function withLogging(f){ 
+   try { 
+        f(); 
+    } catch { 
+        logToSnapErrors(error); 
+    }  
+}
+
+withLogging(function() { 
+    saveUserData(user); // 為何要將此函式包在另一函式?
+})
+```
+- 
 
 ---
 
