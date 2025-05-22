@@ -2080,35 +2080,122 @@ var a4 = withArrayCopy(array, function(copy){
   }
 </style>
 
+---
+
+
+```yaml
+glow: top
+glowOpacity: 0.1
+```
+
+# 讓函式傳回函式
+- 錯誤記錄系統：將可能出錯的程式放入 `try`，讓 `catch` 捕捉錯誤並傳給 Snap Errors 記錄服務
+  - `try/catch` 就像超級英雄服裝，穿上該服裝即獲得超能力（捕捉錯誤傳送給 Snap Errors 的能力）
+  <img src='/images/log-error-cloak.png' width='90%' class='mt-6' />
+
+
+---
+
+```yaml
+glow: bottom
+glowOpacity: 0.1
+```
+
+# 讓函式傳回函式
+
+- 問題：需手動將幾千行程式碼一一穿上這衣服，工程浩大
+  <img src='/images/log-error-many-cloaks.png' width='80%' />
+
+
+---
+
+```yaml
+glow: bottom
+glowOpacity: 0.1
+```
+
+# 讓函式傳回函式
+
+- 解法：寫一個能代替上述作業的新函式（高階函式））
+  <img src='/images/log-error-cloak-high-order-function.png' width='80%' />
 
 
 ---
 
 
-# Navigation
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
+# 撰寫為程式穿上英雄服裝的高階函式
 
-## Keyboard Shortcuts
+1. 觀察目前程式碼
 
-|                                                    |                             |
-| -------------------------------------------------- | --------------------------- |
-| <kbd>right</kbd> / <kbd>space</kbd>                | next animation or slide     |
-| <kbd>left</kbd> / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd>                                      | previous slide              |
-| <kbd>down</kbd>                                    | next slide                  |
 
-<!-- https://sli.dev/guide/animations.html#click-animation -->
+<div class='ml-6'>
 
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-  alt=""
-/>
+```js {*|2,8|4,10}
+try {
+  saveUserData(user); // 只有這行不同，其他都重複
+} catch (error) {
+  logToSnapErrors(error); // 🦸 此程式有超能力
+}
 
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
-#
+try {
+  fetchProduct(productId); // 只有這行不同，其他都重複
+} catch (error) {
+  logToSnapErrors(error); // 🦸 此程式有超能力
+}
+```
+</div>
+
+---
+
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+2. 以 `withLogging` 消除重複
+
+<div class='ml-6'>
+
+```js
+function withLogging(f) {
+  try {
+    f();
+  } catch (error) {
+    logToSnapErrors(error);
+  }
+}
+```
+</div>
+
+
+---
+
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+3. 將原本程式碼套用 `withLogging`
+
+<div class='ml-6'>
+
+```js {*|2,6}
+withLogging(function() {
+  saveUserData(user);  // 🦸 此程式有超能力
+});
+
+withLogging(function() {
+  fetchProduct(productId);  // 🦸 此程式有超能力
+});
+```
+
+- 問題
+  - 套用 `withLogging` 後仍有重複存在
+  - 需手動將 `withLogging` 加到程式內所有需要的地方
+  - 可能忘記登錄錯誤（忘記將某函式傳入 `withLogging()`）
+
+</div>
+
+
+
+
 
 ---
 
