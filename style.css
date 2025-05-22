@@ -17,8 +17,11 @@
 }
 
 .slidev-page h3 {
-  font-weight: 500;
+  font-weight: 600;
   color: #2d8da2;
+}
+.slidev-page h4 {
+  font-weight: 600;
 }
 .slidev-page h5 {
   font-weight: 400;
@@ -60,12 +63,12 @@ img::-moz-selection {
 }
 
 .note-block {
-  --uno: 'mt-4 pa3.75 bg-#a3cfd9 bg-opacity-40 text-#495557 border-rounded-2 font-size-3.65';
+  --uno: "mt-4 pa3.75 bg-#a3cfd9 bg-opacity-40 text-#495557 border-rounded-2 font-size-3.65";
 }
 
-div[class*='language-'],
-pre[class*='language-'],
-code[class*='language-'] {
+div[class*="language-"],
+pre[class*="language-"],
+code[class*="language-"] {
   font-size: 1.05em;
 }
 
@@ -192,6 +195,6 @@ h6 {
   border: 1px solid #eee1;
 }
 
-.rough-annotation > path[stroke-width='2'] {
+.rough-annotation > path[stroke-width="2"] {
   stroke-width: calc(2px * var(--slidev-slide-scale));
 }

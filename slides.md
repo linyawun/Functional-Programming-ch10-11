@@ -13,6 +13,7 @@ info: |
   - 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 JavaScript 為例》 讀書會：[Functional-Programming-Book-Club](https://github.com/Tech-Book-Community/Functional-Programming)
 author: Monica
 class: text-center
+favicon: "https://grokkingsimplicity.com/favicon.ico"
 # https://sli.dev/features/drawing
 drawings:
   persist: false
@@ -1616,9 +1617,7 @@ withLogging(saveUserData(user)); // 函式呼叫地點在 try/catch 區塊外
 
 </div>
 
-
 ---
-
 
 ```yaml
 layout: center
@@ -1635,11 +1634,10 @@ layout: center
 （例如 `setPriceByName`、`setQuantityByName`，price/quantity 其實是參數）。
 
 這會造成重複程式碼、彈性差、維護困難，因為每多一種需求就要多寫一個幾乎一樣的函式。
+
 </div>
 
-
 ---
-
 
 ```yaml
 layout: center
@@ -1663,9 +1661,7 @@ const result = ops[0](2, 3); // 5
 
 </div>
 
-
 ---
-
 
 ```yaml
 layout: center
@@ -1674,7 +1670,6 @@ layout: center
 # 章節回顧
 
 3. 程式重構：請觀察下列兩個函式，將它們重構成一個更通用的高階函式，並簡述這樣做的好處。
-
 
 ```js
 function printAllUppercase(strings) {
@@ -1689,18 +1684,16 @@ function printAllWithPrefix(strings, prefix) {
   }
 }
 
-printAllUppercase(['foo', 'bar']);
+printAllUppercase(["foo", "bar"]);
 // FOO
 // BAR
 
-printAllWithPrefix(['foo', 'bar'], '>> ');
+printAllWithPrefix(["foo", "bar"], ">> ");
 // >> foo
 // >> bar
 ```
 
-
 ---
-
 
 ```yaml
 layout: center
@@ -1720,25 +1713,22 @@ function forEach(array, f) {
   }
 }
 
-forEach(['foo', 'bar'], function(str) {
+forEach(["foo", "bar"], function (str) {
   console.log(str.toUpperCase());
-})
+});
 // FOO
 // BAR
 
-forEach(['foo', 'bar'], function(str) {
-  console.log('>> ' + str);
-})
+forEach(["foo", "bar"], function (str) {
+  console.log(">> " + str);
+});
 // >> foo
 // >> bar
 ```
 
-
 把「要怎麼印」這個行為抽象成參數（`fn`），不用每種印法都寫一個新函式，彈性高、重複少，任何印法都能用同一個高階函式處理。
 
-
 </div>
-
 
 ---
 
@@ -1771,7 +1761,6 @@ withLogging(function () {
 傳入 callback（函式）可以推遲執行，確保在 `try/catch` 內才執行。
 
 </div>
-
 
 ---
 
@@ -1806,8 +1795,11 @@ glowSeed: 12
 ---
 
 # 函式名稱中的隱性引數與兩種重構
+
 複習第 10 章
+
 ### 程式碼異味：函式名稱中的隱性引數
+
 - 此程式碼異味代表: 程式中可用頭等物件改進的部分
 - 程式碼異味特徵
 <ol class='ml-6'> 
@@ -1818,9 +1810,11 @@ glowSeed: 12
 ---
 
 # 函式名稱中的隱性引數與兩種重構
+
 複習第 10 章
 
 ### 重構 1「將隱性引數轉換為顯性」
+
 1. 辨識出函式名稱裡的隱性引數
 2. 加入新參數以接收顯性輸入
 3. 利用新參數取代函式實作中的固定值
@@ -1828,18 +1822,19 @@ glowSeed: 12
 <div class='mb-6'/>
 
 ### 重構 2「以回呼取代主體實作」
+
 1. 辨識一段程式的前段、主體與後段區塊
 2. 將所有區塊包裝成函式 a
 3. 將主體區塊擷取成回呼 b，並將其當成引數傳入函式 a
 
-
-
 ---
 
 # 重構陣列的寫入時複製
+
 重構 2 也能去除「寫入時複製」中重複的實作
 
 1. 辨識前段、主體與後段區塊
+
 - 「寫入時複製」三步驟對應的前段、主體與後段
   - 產生複本 -> 前段
   - 修改複本 -> 主體
@@ -1850,27 +1845,27 @@ glowSeed: 12
 
 ```js {*}{maxHeight:'180px'}
 function arraySet(array, idx, value) {
-  var copy = array.slice();   // 前段
-  copy[idx] = value;  // 主體
-  return copy;  // 後段
+  var copy = array.slice(); // 前段
+  copy[idx] = value; // 主體
+  return copy; // 後段
 }
 
 function push(array, elem) {
-  var copy = array.slice();  // 前段
-  copy.push(elem);  // 主體
-  return copy;  // 後段
+  var copy = array.slice(); // 前段
+  copy.push(elem); // 主體
+  return copy; // 後段
 }
 
 function drop_last(array) {
-  var array_copy = array.slice();  // 前段
-  array_copy.pop();  // 主體
-  return array_copy;  // 後段
+  var array_copy = array.slice(); // 前段
+  array_copy.pop(); // 主體
+  return array_copy; // 後段
 }
 
 function drop_first(array) {
-  var array_copy = array.slice();  // 前段
-  array_copy.shift();  // 主體
-  return array_copy;  // 後段
+  var array_copy = array.slice(); // 前段
+  array_copy.shift(); // 主體
+  return array_copy; // 後段
 }
 ```
 
@@ -1881,9 +1876,10 @@ function drop_first(array) {
 # 重構陣列的寫入時複製
 
 2. 將所有區塊包裝成函式
+
 - 將前段、主體與後段包成新函式
-  - 新函式最後只留陣列拷貝(前段)與傳回(後段) -> 新函式命名為 `withArrayCopy` 
- 
+  - 新函式最後只留陣列拷貝(前段)與傳回(後段) -> 新函式命名為 `withArrayCopy`
+
 <div class="grid grid-cols-2 gap-x-4">
 
 <div>
@@ -1892,9 +1888,9 @@ function drop_first(array) {
 
 ```js
 function arraySet(array, idx, value) {
-  var copy = array.slice();   
-  copy[idx] = value; 
-  return copy;  
+  var copy = array.slice();
+  copy[idx] = value;
+  return copy;
 }
 ```
 
@@ -1906,14 +1902,14 @@ function arraySet(array, idx, value) {
 
 ```js {*|5-10|1-3}
 function arraySet(array, idx, value) {
-    return withArrayCopy(array); // 2. 函式內容被抽到新函式，改寫為傳回新函式結果
+  return withArrayCopy(array); // 2. 函式內容被抽到新函式，改寫為傳回新函式結果
 }
 
-function withArrayCopy(array){
-    // 1. 三區塊包裝到新函式
-    var copy = array.slice();  // 前段
-    copy[idx] = value; // 主體，idx 和 value 變數尚未定義
-    return copy;  // 後段
+function withArrayCopy(array) {
+  // 1. 三區塊包裝到新函式
+  var copy = array.slice(); // 前段
+  copy[idx] = value; // 主體，idx 和 value 變數尚未定義
+  return copy; // 後段
 }
 ```
 
@@ -1926,12 +1922,11 @@ function withArrayCopy(array){
 # 重構陣列的寫入時複製
 
 3. 將主體區塊擷取成回呼
+
 - 將 `withArrayCopy` 主體擷取成回呼，傳入 `arraySet`
   - 此例的回呼是「修改」陣列
 - `withArrayCopy` 新增 `modify` 參數，負責接收並執行回呼
   - `withArrayCopy` 執行 `modify` 回呼時，就會執行傳入的函式 `function(copy){copy[idx] = value;}`
-
-
 
 <div class="grid grid-cols-2 gap-x-4">
 
@@ -1941,13 +1936,13 @@ function withArrayCopy(array){
 
 ```js
 function arraySet(array, idx, value) {
-    return withArrayCopy(array); 
+  return withArrayCopy(array);
 }
 
-function withArrayCopy(array){
-    var copy = array.slice();  
-    copy[idx] = value; 
-    return copy; 
+function withArrayCopy(array) {
+  var copy = array.slice();
+  copy[idx] = value;
+  return copy;
 }
 ```
 
@@ -1955,22 +1950,21 @@ function withArrayCopy(array){
 
 <div>
 
-擷取回呼 
+擷取回呼
 
 ```js {*|10-14|2-7}{maxHeight:'200px'}
 function arraySet(array, idx, value) {
-    return withArrayCopy(
-        array,
-        function(copy){ // 2. 將 copy[idx] = value 改寫成匿名函式，作為 withArrayCopy 的第二個引數
-            copy[idx] = value;
-        }
-    ); 
+  return withArrayCopy(array, function (copy) {
+    // 2. 將 copy[idx] = value 改寫成匿名函式，作為 withArrayCopy 的第二個引數
+    copy[idx] = value;
+  });
 }
 
-function withArrayCopy(array, modify){ // 1. 在 modify 接受傳入一個回呼函式
-    var copy = array.slice();  
-    modify(); 
-    return copy; 
+function withArrayCopy(array, modify) {
+  // 1. 在 modify 接受傳入一個回呼函式
+  var copy = array.slice();
+  modify();
+  return copy;
 }
 ```
 
@@ -1992,9 +1986,9 @@ function withArrayCopy(array, modify){ // 1. 在 modify 接受傳入一個回呼
 
 ```js
 function arraySet(array, idx, value) {
-  var copy = array.slice();   
-  copy[idx] = value;  
-  return copy;  
+  var copy = array.slice();
+  copy[idx] = value;
+  return copy;
 }
 ```
 
@@ -2006,35 +2000,33 @@ function arraySet(array, idx, value) {
 
 ```js
 function arraySet(array, idx, value) {
-    return withArrayCopy(
-        array,
-        function(copy){ 
-            copy[idx] = value;
-        }
-    ); 
+  return withArrayCopy(array, function (copy) {
+    copy[idx] = value;
+  });
 }
 
-function withArrayCopy(array, modify){ 
-    var copy = array.slice();  
-    modify(); 
-    return copy; 
+function withArrayCopy(array, modify) {
+  var copy = array.slice();
+  modify();
+  return copy;
 }
 ```
 
-
 </div>
 </div>
-
 
 ---
 
 # 重構陣列的寫入時複製
+
 ### 改寫後的影響
+
 🔺 程式碼變長
 
 👍「寫入時複製」變成可重用的函式
 
 👍 建立新「寫入時複製」陣列操作函式更有效率
+
 <div class='ml-6'>
 ```js
 // 建立新排序函式只需將操作傳入 withArrayCopy
@@ -2057,18 +2049,19 @@ var sortedArray = withArrayCopy(array, function(copy){
 var a1 = drop_first(array);
 var a2 = push(a1, 10);
 var a3 = push(a2, 11);
-var a4 = arraySet(a3, 0, 42); 
+var a4 = arraySet(a3, 0, 42);
 ```
 
 ```js
 // withArrayCopy 只產生一個複本，對唯一複本做四次修改
-var a4 = withArrayCopy(array, function(copy){
-    copy.shift();
-    copy.push(10);
-    copy.push(11);
-    copy[0] = 42;
-})
+var a4 = withArrayCopy(array, function (copy) {
+  copy.shift();
+  copy.push(10);
+  copy.push(11);
+  copy[0] = 42;
+});
 ```
+
 </div>
 
 </div>
@@ -2082,17 +2075,16 @@ var a4 = withArrayCopy(array, function(copy){
 
 ---
 
-
 ```yaml
 glow: top
 glowOpacity: 0.1
 ```
 
 # 讓函式傳回函式
+
 - 錯誤記錄系統：將可能出錯的程式放入 `try`，讓 `catch` 捕捉錯誤並傳給 Snap Errors 記錄服務
   - `try/catch` 就像超級英雄服裝，穿上該服裝即獲得超能力（捕捉錯誤傳送給 Snap Errors 的能力）
-  <img src='/images/log-error-cloak.png' width='90%' class='mt-6' />
-
+    <img src='/images/log-error-cloak.png' width='90%' class='mt-6' />
 
 ---
 
@@ -2106,7 +2098,6 @@ glowOpacity: 0.1
 - 問題：需手動將幾千行程式碼一一穿上這衣服，工程浩大
   <img src='/images/log-error-many-cloaks.png' width='80%' />
 
-
 ---
 
 ```yaml
@@ -2119,15 +2110,11 @@ glowOpacity: 0.1
 - 解法：寫一個能代替上述作業的新函式（高階函式））
   <img src='/images/log-error-cloak-high-order-function.png' width='80%' />
 
-
 ---
-
-
 
 # 撰寫為程式穿上英雄服裝的高階函式
 
 1. 觀察目前程式碼
-
 
 <div class='ml-6'>
 
@@ -2144,10 +2131,10 @@ try {
   logToSnapErrors(error); // 🦸 此程式有超能力
 }
 ```
+
 </div>
 
 ---
-
 
 # 撰寫為程式穿上英雄服裝的高階函式
 
@@ -2164,11 +2151,10 @@ function withLogging(f) {
   }
 }
 ```
+
 </div>
 
-
 ---
-
 
 # 撰寫為程式穿上英雄服裝的高階函式
 
@@ -2177,12 +2163,12 @@ function withLogging(f) {
 <div class='ml-6'>
 
 ```js {*|2,6}
-withLogging(function() {
-  saveUserData(user);  // 🦸 此程式有超能力
+withLogging(function () {
+  saveUserData(user); // 🦸 此程式有超能力
 });
 
-withLogging(function() {
-  fetchProduct(productId);  // 🦸 此程式有超能力
+withLogging(function () {
+  fetchProduct(productId); // 🦸 此程式有超能力
 });
 ```
 
@@ -2193,9 +2179,541 @@ withLogging(function() {
 
 </div>
 
+---
 
+# 撰寫為程式穿上英雄服裝的高階函式
 
+3. 將原本程式碼套用 `withLogging`
 
+<div class='ml-6'>
+
+```js
+withLogging(function () {
+  saveUserData(user); // 🦸 此程式有超能力
+});
+
+withLogging(function () {
+  fetchProduct(productId); // 🦸 此程式有超能力
+});
+```
+
+- 解法：建立 `wrapLogging` 新函式
+  - 以無超能力（不會記錄錯誤）的函式為引數，傳回該函式的超能力（會記錄錯誤）版本
+  - 只需在一開始將所有一般函式轉為超能力函式即可
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+4. 重新檢視原始程式
+
+<div class='ml-6'>
+
+- 這兩段程式既執行一般功能、又有超能力（紀錄錯誤）
+
+```js
+try {
+  saveUserData(user);
+} catch (error) {
+  logToSnapErrors(error);
+}
+
+try {
+  fetchProduct(productId);
+} catch (error) {
+  logToSnapErrors(error);
+}
+```
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+5. 將 `try` 區塊的一般程式改名，反映「不主動記錄錯誤」的事實
+
+<div class='ml-6'>
+
+```js {*|2,8}
+try {
+  saveUserDataNoLogging(user);
+} catch (error) {
+  logToSnapErrors(error);
+}
+
+try {
+  fetchProductNoLogging(productId);
+} catch (error) {
+  logToSnapErrors(error);
+}
+```
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+6. 建立「會記錄錯誤」的函式
+
+<div class='ml-6'>
+
+```js
+function saveUserDataWithLogging(user) {
+  try {
+    saveUserDataNoLogging(user);
+  } catch (error) {
+    logToSnapErrors(error);
+  }
+}
+
+function fetchProductWithLogging(productId) {
+  try {
+    fetchProductNoLogging(productId);
+  } catch (error) {
+    logToSnapErrors(error);
+  }
+}
+```
+
+✅ 呼叫這兩個函式就能確保錯誤被記錄 <span class='opacity-80 text-sm'>先準備好「超能力」函式，就不用在上千處呼叫時都包 <code>try/catch</code> </span>
+
+🔺 主體實作中太多重複
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+7. 將實作改寫為匿名函式，將參數名稱普適化
+
+<div class='ml-6'>
+
+```js
+function(arg) { // 前段
+  try {  // 前段
+    saveUserDataNoLogging(arg); // 主體
+  } catch (error) { // 後段
+    logToSnapErrors(error); // 後段
+  } // 後段
+} // 後段
+
+function(arg) {  // 前段
+  try {  // 前段
+    fetchProductNoLogging(arg); // 主體
+  } catch (error) { // 後段
+    logToSnapErrors(error);  // 後段
+  }  // 後段
+}  // 後段
+```
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+8. 實作重構 2 以回呼取代主體實作
+
+<div class='ml-6'>
+
+<p class='my-0!'>將 <code>try/catch</code> 包到新函式，將該區塊函式作為匿名函式回傳</p>
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js
+// 將以下匿名函式作為 wrapLogging 的傳回值
+function(arg) {
+  try {
+    saveUserDataNoLogging(arg);
+  } catch (error) {
+    logToSnapErrors(error);
+  }
+}
+```
+
+<div>
+
+```js
+// wrapLogging 可接收一個函式引數
+function wrapLogging(f) {
+  // wrapLogging 的傳回值是函式
+  return function (arg) {
+    try {
+      // 能執行不同程式的 try/catch 被包裝在匿名函式中
+      f(arg);
+    } catch (error) {
+      logToSnapErrors(error);
+    }
+  };
+}
+
+// 將 wrapLogging 的傳回函式指定給變數，藉此賦予該函式名稱
+var saveUserDataWithLogging = wrapLogging(saveUserDataNoLogging);
+```
+
+<p class='my-0! opacity-80 text-sm'> <code>wrapLogging</code>：接受一個函式 <code>f</code>，將 <code>f</code> 包裝到 <code>try/catch</code> 中，再以函式形式傳回 </p>
+</div>
+
+</div>
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+9. 可用 `wrapLogging` 將任何一般函式(無記錄功能)轉為超能力函式(會記錄錯誤)
+
+<div class='ml-6'>
+
+```js
+var saveUserDataWithLogging = wrapLogging(saveUserDataNoLogging);
+var fetchProductWithLogging = wrapLogging(fetchProductNoLogging);
+```
+
+- `wrapLogging` 優點
+  - 輕易將登錄錯誤的行為附加到函式
+  - 消除重複程式(不必反覆打類似的 `try/catch`)
+
+</div>
+
+---
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+前後改寫比較
+
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+#### 手動加上「超能力」
+
+```js
+// 😵‍💫 若有一千行程式需記錄錯誤，就要寫一千次 try/catch
+try {
+  saveUserData(user);
+} catch (error) {
+  logToSnapErrors(error);
+}
+```
+
+</div>
+
+<div>
+
+#### 自動加上「超能力」
+
+```js
+saveUserDataWithLogging(user);
+
+// saveUserDataWithLogging 來自於能給予任意函式超能力的 wrapLogging
+function wrapLogging(f) {
+  return function (arg) {
+    try {
+      f(arg);
+    } catch (error) {
+      logToSnapErrors(error);
+    }
+  };
+}
+```
+
+</div>
+</div>
+
+---
+
+```yaml
+glow: right
+glowOpacity: 0.1
+```
+
+# 撰寫為程式穿上英雄服裝的高階函式
+
+`wrapLogging` 將 `saveUserDataNoLogging` 轉為 `saveUserDataWithLogging` 示意圖
+
+<img src='/images/wrapLogging-high-order-function.png' width='90%' />
+
+---
+
+# 讓函式傳回函式可以…
+
+<br />
+✅ 建立自動化「函式生成工廠」
+
+✅ 將特定程序標準化
+
+---
+
+# 補充
+
+#### 如何讓 `wrapLogging` 傳回的新函式接收更多引數? 如何讓新函式傳回值?
+
+- 如何讓新函式傳回值?
+  - 將 `try` 區塊內的 `f(arg)` 改為 `return f(arg)`
+- 如何讓 `wrapLogging` 傳回的新函式接收更多引數?
+  - 可用 ES6 JavaScript 的 rest arguments 與 spread operator
+
+<div class='ml-12'>
+
+```js {*}{maxHeight:'220px'}
+function wrapLogging(f) {
+  return function (...args) {
+    // 使用 rest parameters 接收任意數量參數
+    try {
+      return f(...args); // 使用 spread operator 展開參數
+    } catch (error) {
+      logToSnapErrors(error);
+    }
+  };
+}
+
+// 以 apply 實作，可保持 this 的上下文
+function wrapLogging(f) {
+  return function (...args) {
+    try {
+      return f.apply(this, args); // 使用 apply 傳遞參數
+    } catch (error) {
+      logToSnapErrors(error);
+    }
+  };
+}
+```
+
+</div>
+
+---
+
+# 補充
+
+#### 能傳回新函式的高階函式可做到很多事，有可能用高階函式撰寫整個程式嗎?
+
+只用高階函式撰寫程式，有可能做到 👌
+
+---
+
+# 補充
+
+#### 只用高階函式撰寫程式，有好處嗎?
+
+- 高階函式使用時機
+  - 減少重複程式碼
+  - 處理常見模式(如迴圈、錯誤捕捉)
+- 使用高階函式應注意
+  - 不要過度使用，可能降低可讀性
+  - 要評估是否真的比直接實作好
+- 使用高階函式解決問題時，應評估
+  - 高階函式是否比較好?
+  - 高階函式是否提升可讀性?
+  - 高階函式減少多少重複？
+  - 別人是否看懂高階函式在做什麼?
+
+---
+
+# 補充
+
+#### 💡 高階函式的取捨
+
+- 優點：消除程式重複性
+- 缺點：降低可讀性
+
+<br class='mb-6'/>
+
+> 高階函式應謹慎使用，在能創造實質好處時使用
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+1. 讓 `try` 和 `catch` 區塊都能執行不同程式碼，實作 `tryCatch`
+
+```js
+// 將以下
+try {
+  sendEmail();
+} catch (error) {
+  logToSnapErrors(error);
+}
+
+// 改成以下
+tryCatch(sendEmail, logToSnapErrors);
+```
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+```js
+function tryCatch(f, errorHandler) {
+  try {
+    return f();
+  } catch (error) {
+    return errorHandler(error);
+  }
+}
+```
+
+</div>
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+2. 以重構 2 將 `if` 敘述包裝成函式，實作 `when(test, then)`
+
+```js
+// 將以下
+if (array.length === 0) {
+  // test 語句
+  console.log("Array is empty"); // then 語句
+}
+
+// 改成以下
+when(
+  array.length === 0, // test 語句
+  function () {
+    console.log("Array is empty"); // then 語句
+  },
+);
+```
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+```js
+function when(test, then) {
+  if (test) return then();
+}
+```
+
+</div>
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+3. 請觀察以下程式碼，使用「以回呼取代主體實作」的重構方式，將重複的程式碼改寫成高階函式：
+
+```js
+function addAndLog(a, b) {
+  const result = a + b;
+  console.log("計算結果:", result);
+  return result;
+}
+
+function multiplyAndLog(a, b) {
+  const result = a * b;
+  console.log("計算結果:", result);
+  return result;
+}
+```
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+3. 請觀察以下程式碼，使用「以回呼取代主體實作」的重構方式，將重複的程式碼改寫成高階函式：
+
+<div class='opacity-75 text-sm'>
+
+```js
+function withLogging(operation) {
+  return function (a, b) {
+    const result = operation(a, b);
+    console.log("計算結果:", result);
+    return result;
+  };
+}
+
+const addAndLog = withLogging((a, b) => a + b);
+const multiplyAndLog = withLogging((a, b) => a * b);
+
+console.log(addAndLog(2, 3)); // 計算結果: 5
+console.log(multiplyAndLog(2, 3)); // 計算結果: 6
+```
+
+</div>
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+4. 撰寫 `makeAdder()` 高階函式，傳回可將兩數相加的新函式
+
+```js
+// 使用方式
+var increment = makeAdder(1);
+increment(10); // 11
+
+var plus10 = makeAdder(10);
+plus10(12); // 22
+```
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+```js
+function makeAdder(n) {
+  return function (x) {
+    return n + x;
+  };
+}
+```
+
+</div>
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+5. 請解釋什麼是「函式生成工廠」(function factory)，並用一個簡單的例子說明。
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+函式生成工廠是指能產生新函式的函式。例如：
+
+```js
+function makeGreeter(greeting) {
+  return function (name) {
+    return greeting + ", " + name + "!";
+  };
+}
+
+const sayHello = makeGreeter("Hello");
+const sayHi = makeGreeter("Hi");
+
+console.log(sayHello("John")); // "Hello, John!"
+console.log(sayHi("John")); // "Hi, John!"
+```
+
+`makeGreeter` 就是一個函式生成工廠，它接收一個問候語，回傳一個新的問候函式。
+
+</div>
 
 ---
 
