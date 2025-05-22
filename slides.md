@@ -1616,6 +1616,183 @@ withLogging(saveUserData(user)); // 函式呼叫地點在 try/catch 區塊外
 
 </div>
 
+
+---
+
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+1. 什麼是「函式名稱中的隱性引數」？這種程式碼異味會造成什麼問題？
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+「函式名稱中的隱性引數」指的是：函式名稱裡藏有實際應該作為參數傳入的資訊
+<br/>
+（例如 `setPriceByName`、`setQuantityByName`，price/quantity 其實是參數）。
+
+這會造成重複程式碼、彈性差、維護困難，因為每多一種需求就要多寫一個幾乎一樣的函式。
+</div>
+
+
+---
+
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+2. 請說明「頭等物件」和「頭等函式」的定義，並舉一個 JavaScript 的例子。
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+頭等物件：可以賦值給變數、作為參數傳遞、作為回傳值、存進資料結構的元素。
+
+頭等函式：函式本身也是頭等物件，可以像資料一樣操作。
+
+```js
+const add = (a, b) => a + b;
+const ops = [add, Math.max];
+const result = ops[0](2, 3); // 5
+```
+
+</div>
+
+
+---
+
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+3. 程式重構：請觀察下列兩個函式，將它們重構成一個更通用的高階函式，並簡述這樣做的好處。
+
+
+```js
+function printAllUppercase(strings) {
+  for (var i = 0; i < strings.length; i++) {
+    console.log(strings[i].toUpperCase());
+  }
+}
+
+function printAllWithPrefix(strings, prefix) {
+  for (var i = 0; i < strings.length; i++) {
+    console.log(prefix + strings[i]);
+  }
+}
+
+printAllUppercase(['foo', 'bar']);
+// FOO
+// BAR
+
+printAllWithPrefix(['foo', 'bar'], '>> ');
+// >> foo
+// >> bar
+```
+
+
+---
+
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+3. 程式重構：請觀察下列兩個函式，將它們重構成一個更通用的高階函式，並簡述這樣做的好處。
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+```js {*}{maxHeight:'250px'}
+function forEach(array, f) {
+  for (var i = 0; i < array.length; i++) {
+    var item = array[i];
+    f(item);
+  }
+}
+
+forEach(['foo', 'bar'], function(str) {
+  console.log(str.toUpperCase());
+})
+// FOO
+// BAR
+
+forEach(['foo', 'bar'], function(str) {
+  console.log('>> ' + str);
+})
+// >> foo
+// >> bar
+```
+
+
+把「要怎麼印」這個行為抽象成參數（`fn`），不用每種印法都寫一個新函式，彈性高、重複少，任何印法都能用同一個高階函式處理。
+
+
+</div>
+
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+4. 程式理解：請問下列程式碼的 `withLogging` 函式為什麼要傳入一個函式（callback），而不是直接傳入 `saveUserData(user)`？如果直接傳入會有什麼問題？
+
+```js
+function withLogging(f) {
+  try {
+    f();
+  } catch {
+    logToSnapErrors(error);
+  }
+}
+
+withLogging(function () {
+  saveUserData(user);
+});
+```
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+因為要讓 `saveUserData(user)` 的執行時機在 `try/catch` 區塊內。如果直接寫 `withLogging(saveUserData(user))`，`saveUserData(user)` 會在進入 `withLogging` 前就執行，錯誤不會被 `catch`。
+
+傳入 callback（函式）可以推遲執行，確保在 `try/catch` 內才執行。
+
+</div>
+
+
+---
+
+```yaml
+layout: center
+```
+
+# 章節回顧
+
+5. 請解釋什麼是「高階函式」（higher-order function），以及為什麼「頭等函式」是實現高階函式的前提？
+
+<div v-click='1' class='opacity-75 mt-6 text-sm'>
+
+高階函式是指「接受其他函式作為參數，或回傳函式」的函式。
+
+只有當函式是頭等物件（能當作參數、回傳值、變數賦值等）時，才能把函式傳來傳去，才能寫出高階函式。
+<br/>
+如果函式不是頭等物件，就無法把它當作資料操作，高階函式也就不可能存在。
+
+</div>
+
 ---
 
 ```yaml
@@ -1627,6 +1804,286 @@ glowSeed: 12
 # Ch11 頭等函式（2）
 
 ---
+
+# 函式名稱中的隱性引數與兩種重構
+複習第 10 章
+### 程式碼異味：函式名稱中的隱性引數
+- 此程式碼異味代表: 程式中可用頭等物件改進的部分
+- 程式碼異味特徵
+<ol class='ml-6'> 
+  <li>程式中有許多相似的實作</li>
+  <li>上述實作差異出現在函式名稱上</li>
+</ol>
+
+---
+
+# 函式名稱中的隱性引數與兩種重構
+複習第 10 章
+
+### 重構 1「將隱性引數轉換為顯性」
+1. 辨識出函式名稱裡的隱性引數
+2. 加入新參數以接收顯性輸入
+3. 利用新參數取代函式實作中的固定值
+4. 更改呼叫程式碼
+<div class='mb-6'/>
+
+### 重構 2「以回呼取代主體實作」
+1. 辨識一段程式的前段、主體與後段區塊
+2. 將所有區塊包裝成函式 a
+3. 將主體區塊擷取成回呼 b，並將其當成引數傳入函式 a
+
+
+
+---
+
+# 重構陣列的寫入時複製
+重構 2 也能去除「寫入時複製」中重複的實作
+
+1. 辨識前段、主體與後段區塊
+- 「寫入時複製」三步驟對應的前段、主體與後段
+  - 產生複本 -> 前段
+  - 修改複本 -> 主體
+  - 傳回複本 -> 後段
+- 以第六章寫入時複製函式為例
+
+<div class='ml-6'>
+
+```js {*}{maxHeight:'180px'}
+function arraySet(array, idx, value) {
+  var copy = array.slice();   // 前段
+  copy[idx] = value;  // 主體
+  return copy;  // 後段
+}
+
+function push(array, elem) {
+  var copy = array.slice();  // 前段
+  copy.push(elem);  // 主體
+  return copy;  // 後段
+}
+
+function drop_last(array) {
+  var array_copy = array.slice();  // 前段
+  array_copy.pop();  // 主體
+  return array_copy;  // 後段
+}
+
+function drop_first(array) {
+  var array_copy = array.slice();  // 前段
+  array_copy.shift();  // 主體
+  return array_copy;  // 後段
+}
+```
+
+</div>
+
+---
+
+# 重構陣列的寫入時複製
+
+2. 將所有區塊包裝成函式
+- 將前段、主體與後段包成新函式
+  - 新函式最後只留陣列拷貝(前段)與傳回(後段) -> 新函式命名為 `withArrayCopy` 
+ 
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+原始程式
+
+```js
+function arraySet(array, idx, value) {
+  var copy = array.slice();   
+  copy[idx] = value; 
+  return copy;  
+}
+```
+
+</div>
+
+<div>
+
+建立包裝函式
+
+```js {*|5-10|1-3}
+function arraySet(array, idx, value) {
+    return withArrayCopy(array); // 2. 函式內容被抽到新函式，改寫為傳回新函式結果
+}
+
+function withArrayCopy(array){
+    // 1. 三區塊包裝到新函式
+    var copy = array.slice();  // 前段
+    copy[idx] = value; // 主體，idx 和 value 變數尚未定義
+    return copy;  // 後段
+}
+```
+
+</div>
+
+</div>
+
+---
+
+# 重構陣列的寫入時複製
+
+3. 將主體區塊擷取成回呼
+- 將 `withArrayCopy` 主體擷取成回呼，傳入 `arraySet`
+  - 此例的回呼是「修改」陣列
+- `withArrayCopy` 新增 `modify` 參數，負責接收並執行回呼
+  - `withArrayCopy` 執行 `modify` 回呼時，就會執行傳入的函式 `function(copy){copy[idx] = value;}`
+
+
+
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+目前程式
+
+```js
+function arraySet(array, idx, value) {
+    return withArrayCopy(array); 
+}
+
+function withArrayCopy(array){
+    var copy = array.slice();  
+    copy[idx] = value; 
+    return copy; 
+}
+```
+
+</div>
+
+<div>
+
+擷取回呼 
+
+```js {*|10-14|2-7}{maxHeight:'200px'}
+function arraySet(array, idx, value) {
+    return withArrayCopy(
+        array,
+        function(copy){ // 2. 將 copy[idx] = value 改寫成匿名函式，作為 withArrayCopy 的第二個引數
+            copy[idx] = value;
+        }
+    ); 
+}
+
+function withArrayCopy(array, modify){ // 1. 在 modify 接受傳入一個回呼函式
+    var copy = array.slice();  
+    modify(); 
+    return copy; 
+}
+```
+
+</div>
+
+</div>
+
+---
+
+# 重構陣列的寫入時複製
+
+前後改寫比較
+
+<div class="grid grid-cols-2 gap-x-4">
+
+<div>
+
+#### 重構前
+
+```js
+function arraySet(array, idx, value) {
+  var copy = array.slice();   
+  copy[idx] = value;  
+  return copy;  
+}
+```
+
+</div>
+
+<div>
+
+#### 重構後
+
+```js
+function arraySet(array, idx, value) {
+    return withArrayCopy(
+        array,
+        function(copy){ 
+            copy[idx] = value;
+        }
+    ); 
+}
+
+function withArrayCopy(array, modify){ 
+    var copy = array.slice();  
+    modify(); 
+    return copy; 
+}
+```
+
+
+</div>
+</div>
+
+
+---
+
+# 重構陣列的寫入時複製
+### 改寫後的影響
+🔺 程式碼變長
+
+👍「寫入時複製」變成可重用的函式
+
+👍 建立新「寫入時複製」陣列操作函式更有效率
+<div class='ml-6'>
+```js
+// 建立新排序函式只需將操作傳入 withArrayCopy
+var sortedArray = withArrayCopy(array, function(copy){
+    SuperSorter.sort(copy);
+})
+```
+
+</div>
+👍 優化效能
+
+<div class='ml-6'>
+
+<p class='text-sm mb-0!'>原本執行一系列「寫入時複製」要建立多個複本，<code>withArrayCopy</code> 只會產生一個複本</p>
+
+<div class="grid grid-cols-2 gap-x-4">
+
+```js
+// 這段程式會產生四個陣列複本
+var a1 = drop_first(array);
+var a2 = push(a1, 10);
+var a3 = push(a2, 11);
+var a4 = arraySet(a3, 0, 42); 
+```
+
+```js
+// withArrayCopy 只產生一個複本，對唯一複本做四次修改
+var a4 = withArrayCopy(array, function(copy){
+    copy.shift();
+    copy.push(10);
+    copy.push(11);
+    copy[0] = 42;
+})
+```
+</div>
+
+</div>
+
+<style>
+  .slidev-layout p{
+    margin-top: 0px;
+    margin-bottom: 0.5rem;
+  }
+</style>
+
+
+
+---
+
 
 # Navigation
 
