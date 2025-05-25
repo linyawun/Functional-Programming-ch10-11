@@ -2,7 +2,7 @@
 
 > This is a [Slidev](https://github.com/slidevjs/slidev)-powered presentation introducing First-Class Functions in JavaScript, covering functional programming concepts and practical examples.
 
-- [View the slides online]()
+- [View the slides online](https://functional-programming-ch10-11.vercel.app)
 
 ## Contact the Author
 
