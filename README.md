@@ -1,11 +1,11 @@
-# Welcome to [Slidev](https://github.com/slidevjs/slidev)!
+# Grokking Simplicity: Taming Complex Software with Functional Thinking - Ch10-11 Slides
 
-To start the slide show:
+> This is a [Slidev](https://github.com/slidevjs/slidev)-powered presentation introducing First-Class Functions in JavaScript, covering functional programming concepts and practical examples.
 
-- `pnpm install`
-- `pnpm dev`
-- visit <http://localhost:3030>
+- [View the slides online]()
 
-Edit the [slides.md](./slides.md) to see the changes.
+## Contact the Author
 
-Learn more about Slidev at the [documentation](https://sli.dev/).
+You can contact me through the following means:
+
+- Email: linyawun031@gmail.com
