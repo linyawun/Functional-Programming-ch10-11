@@ -249,7 +249,7 @@ glowOpacity: 0.8
 glowSeed: 12
 ```
 
-# Ch10 頭等函式（1）
+# Ch10 頭等函式 (1)
 
 ---
 
@@ -1790,7 +1790,7 @@ glowOpacity: 0.8
 glowSeed: 12
 ```
 
-# Ch11 頭等函式（2）
+# Ch11 頭等函式 (2)
 
 ---
 
