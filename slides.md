@@ -212,37 +212,6 @@ glowOpacity: 0.1
 
 ---
 
-# 頭等抽象化
-
-### 頭等抽象化(first-class abstraction)
-
-- 舉例：JavaScript 函式可作為參數傳給其他函式
-
-```js {*}{maxHeight:'260px'}
-const applyOperation = (a, b, operation) => operation(a, b);
-
-const addition = (x, y) => x + y;
-const multiply = (x, y) => {
-  if (typeof x === "number" && typeof y === "number") {
-    return x * y;
-  } else if (typeof x === "string" && typeof y === "number") {
-    return x.repeat(y);
-  } else {
-    throw new Error("Invalid types for multiplication");
-  }
-};
-
-console.log(applyOperation(5, 3, addition)); // 8
-console.log(applyOperation(5, 3, multiply)); //15
-console.log(applyOperation("Good", "day", addition)); //"Goodday"
-console.log(applyOperation("Hi", 3, multiply)); //"HiHiHi"
-```
-
-- `addition` 和 `multiply`：具體實作邏輯的函式
-- `applyOperation`：抽象化的高階函式
-
----
-
 ```yaml
 layout: center
 glowOpacity: 0.8
@@ -441,7 +410,7 @@ cart = setTaxByName(cart, "shoe", 2.34);
 
 <div class='ml-6'>
 
-```js {*|1|3|8-12|all}{maxHeight:'200px'}
+```js {*|2|4|8-13|all}{maxHeight:'200px'}
 function setFieldByName(cart, name, field, value) {
   // 2. 加入新參數以接收顯性輸入：加入代表屬性的顯性參數 field，將代表屬性值的參數名稱普適化為 value
   var item = cart[name];
@@ -1323,7 +1292,7 @@ withLogging();
 
 擷取回呼
 
-```js {*|1,3,9}
+```js {*|2,4,11}
 function withLogging(f) {
   // 1. f 代表要傳入的函式，成為一個參數
   try {
@@ -1581,41 +1550,6 @@ layout: center
 <br class='hidden'>
 
 為了將 `saveUserData()` 推遲到 `withLogging()` 的 `try/catch` 內執行，需將前者包裹後傳入後者
-
----
-
-# 討論
-
-<div class="grid grid-cols-[1fr_380px]  gap-x-4">
-<div>
-
-- Q：為何要傳入程式？只傳入 Data（數值）不行嗎？
-  - 如果傳入的是 Data 而非函式...
-    - `saveUserData(user)` 呼叫處在 `try/catch` 區塊外，即使出錯 `catch` 也捕捉不到
-  - 傳入函式的目的：在特定脈絡下執行該程式
-    - 脈絡如：`try/catch`、`for` 迴圈
-  - 高階函式：可為其他函式設定執行脈絡，在程式各處重複使用
-
-</div>
-
-<div>
-
-```js {*|1-2,10}
-function withLogging(data) {
-  // 傳入的不是函式，而是函式執行結果
-  try {
-    data;
-  } catch (error) {
-    logToSnapErrors(error);
-  }
-}
-
-withLogging(saveUserData(user)); // 函式呼叫地點在 try/catch 區塊外
-```
-
-</div>
-
-</div>
 
 ---
 
@@ -2107,7 +2041,7 @@ glowOpacity: 0.1
 
 # 讓函式傳回函式
 
-- 解法：寫一個能代替上述作業的新函式（高階函式））
+- 解法：寫一個能代替上述作業的新函式（高階函式）
   <img src='/images/log-error-cloak-high-order-function.png' width='80%' />
 
 ---
