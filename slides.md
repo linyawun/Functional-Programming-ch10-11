@@ -13,7 +13,6 @@ info: |
   - 《簡約的軟體開發思維：用 Functional Programming 重構程式 - 以 JavaScript 為例》 讀書會：[Functional-Programming-Book-Club](https://github.com/Tech-Book-Community/Functional-Programming)
 author: Monica
 class: text-center
-favicon: "https://grokkingsimplicity.com/favicon.ico"
 # https://sli.dev/features/drawing
 drawings:
   persist: false
@@ -447,22 +446,22 @@ glow: top
   - A：不論既有或新加的，`setFieldByName` 都可處理，只要提供新屬性名稱即可
 
 👍 本來行銷部門要記多個函式，還要發出新增函式請求 ⮕ 現在只需知道一個函式和幾個屬性名稱字串
-  <img src='/images/refactor1-after-refactor.png' width='100%' />
+<img src='/images/refactor1-after-refactor.png' width='100%' />
 
 ---
 
 # 辨識頭等與非頭等
+
 JavaScript 的頭等物件（first-class objects）與非頭等物件
 
 <div class='text-4 leading-6'>
 
-|              | 說明                                               | 舉例                                                                                      |
-|--------------|----------------------------------------------------|------------------------------------------------------------------------------------------|
-| 頭等物件     | <ul><li>可賦值給變數</li><li>可作為函式參數</li><li>可作為函式回傳值</li><li>可存進資料結構</li></ul>  | <ul><li>數字</li><li>字串</li><li>布林值</li><li>陣列</li><li>物件</li><li>函式</li></ul> |
-| 非頭等物件   | <ul><li>不能像變數一樣賦值、傳遞、儲存</li><li>存在於所有程式語言，不可避免</li></ul>               | <ul><li>運算子（`+`、`-`）</li><li>控制流程（`for`、`if`、`try/catch`）</li></ul>                         |
+|            | 說明                                                                                                  | 舉例                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 頭等物件   | <ul><li>可賦值給變數</li><li>可作為函式參數</li><li>可作為函式回傳值</li><li>可存進資料結構</li></ul> | <ul><li>數字</li><li>字串</li><li>布林值</li><li>陣列</li><li>物件</li><li>函式</li></ul> |
+| 非頭等物件 | <ul><li>不能像變數一樣賦值、傳遞、儲存</li><li>存在於所有程式語言，不可避免</li></ul>                 | <ul><li>運算子（`+`、`-`）</li><li>控制流程（`for`、`if`、`try/catch`）</li></ul>         |
 
 </div>
-
 
 <p class='mt-6'>💡 關鍵：將本來的非頭等物件「頭等化」</p>
 
@@ -508,12 +507,12 @@ glow: right
 
 <div class='text-4 leading-6 ml-6'>
 
-| 語言／技術   | 靜態檢查方式／型別系統說明                                                                 |
-|--------------|--------------------------------------------------------------------------------------------|
-| JavaScript   | 沒有內建靜態型別系統，可用 TypeScript 彌補                                                  |
-| TypeScript   | 可檢查字串是否符合既有屬性名稱，型別檢查器在程式執行前就能指出錯誤                              |
-| Java         | 可用 enum 型別確保屬性名稱正確性                                                            |
-| Haskell      | 可用「可辨識聯合 discriminated union」達成類似目的|
+| 語言／技術 | 靜態檢查方式／型別系統說明                                         |
+| ---------- | ------------------------------------------------------------------ |
+| JavaScript | 沒有內建靜態型別系統，可用 TypeScript 彌補                         |
+| TypeScript | 可檢查字串是否符合既有屬性名稱，型別檢查器在程式執行前就能指出錯誤 |
+| Java       | 可用 enum 型別確保屬性名稱正確性                                   |
+| Haskell    | 可用「可辨識聯合 discriminated union」達成類似目的                 |
 
 </div>
 
@@ -629,7 +628,6 @@ function setFieldByName(cart, name, field, value) {
 <div class='note-block mt-12'>
 資料導向（data orientation）：以通用資料結構表示「與事件和實體有關之事實」的設計原則
 </div>
-
 
 ---
 
@@ -2403,7 +2401,6 @@ function wrapLogging(f) {
   - 高階函式是否提升可讀性?
   - 高階函式減少多少重複？
   - 別人是否看懂高階函式在做什麼?
-
 
 ---
 
